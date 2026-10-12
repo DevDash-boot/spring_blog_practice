@@ -34,6 +34,36 @@
             {{/isOwner}}
         </div>
     </article>
+    <div class="card-footer mt-2">
+        <b>댓글 목록</b>
+    </div>
+
+    <div class="list-group">
+        {{#replyList}}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <b>{{user.username}}</b>
+                        <span>{{content}}</span>
+                    </div>
+                    {{#isOwner}}
+                        <div>
+                            <a href="/reply/{{id}}/update-form" class="btn btn-warning btn-sm">수정</a>
+                            <form action="/reply/{{id}}/delete" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                            </form>
+                        </div>
+                    {{/isOwner}}
+                </div>
+            </div>
+        {{/replyList}}
+
+        {{^replyList}}
+            <div class="list-group-item">
+                등록된 댓글이 없습니다.
+            </div>
+        {{/replyList}}
+    </div>
 </section>
 
 <script>
