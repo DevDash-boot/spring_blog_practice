@@ -1,0 +1,32 @@
+{{> layout/header}}
+
+<section class="container form-container">
+    <a href="/board/list" class="back-link">
+        <i class="fa-solid fa-arrow-left me-2"></i> 게시글 목록
+    </a>
+
+    <div class="form-heading">
+        <span class="eyebrow">NEW ARTICLE</span>
+        <h1>새 게시글 작성</h1>
+        <p>다른 개발자와 나누고 싶은 이야기를 작성해 보세요.</p>
+    </div>
+
+    <form action="/board/save" method="post" class="editor-form">
+        <div class="mb-4">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" id="title" name="title" class="form-control"
+                   placeholder="게시글 제목을 입력하세요." required>
+        </div>
+        <div class="mb-4">
+            <label for="content" class="form-label">내용</label>
+            <textarea id="content" name="content" class="form-control"
+                      rows="12" placeholder="내용을 입력하세요." required></textarea>
+        </div>
+        <div class="form-actions">
+            <a href="/board/list" class="btn btn-outline-dark">취소</a>
+            <button type="submit" class="btn btn-dark">게시글 등록</button>
+        </div>
+    </form>
+</section>
+
+{{> layout/footer}}

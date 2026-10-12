@@ -1,0 +1,56 @@
+```html
+{{> layout/header}}
+
+<section class="container form-container">
+    <div class="form-heading">
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1>로그인</h1>
+        <p>DevBlog에 로그인하세요.</p>
+    </div>
+
+    <form action="/login" method="post" class="editor-form">
+        <div class="mb-3">
+            <label for="username" class="form-label">아이디</label>
+            <input type="text" id="username" name="username"
+                   class="form-control" placeholder="아이디 입력" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" id="password" name="password"
+                   class="form-control" placeholder="비밀번호 입력" required>
+        </div>
+
+        <div class="form-check mb-4">
+            <input type="checkbox" id="rememberId" class="form-check-input">
+            <label for="rememberId" class="form-check-label">아이디 저장</label>
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100">로그인</button>
+    </form>
+</section>
+
+<script>
+    const usernameInput = document.getElementById('username');
+    const rememberId = document.getElementById('rememberId');
+
+    // 저장된 아이디 불러오기
+    const savedUsername = localStorage.getItem('savedUsername');
+
+    if (savedUsername) {
+        usernameInput.value = savedUsername;
+        rememberId.checked = true;
+    }
+
+    // 로그인할 때 아이디 저장 여부 처리
+    document.querySelector('form').addEventListener('submit', function () {
+        if (rememberId.checked) {
+            localStorage.setItem('savedUsername', usernameInput.value);
+        } else {
+            localStorage.removeItem('savedUsername');
+        }
+    });
+</script>
+
+{{> layout/footer}}
+```

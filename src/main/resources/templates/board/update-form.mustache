@@ -1,0 +1,32 @@
+{{> layout/header}}
+
+<section class="container form-container">
+    <a href="/board/{{board.id}}" class="back-link">
+        <i class="fa-solid fa-arrow-left me-2"></i> 게시글로 돌아가기
+    </a>
+
+    <div class="form-heading">
+        <span class="eyebrow">EDIT ARTICLE</span>
+        <h1>게시글 수정</h1>
+        <p>게시글 내용을 수정하고 저장하세요.</p>
+    </div>
+
+    <form action="/board/{{board.id}}/update" method="post" class="editor-form">
+        <div class="mb-4">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" id="title" name="title" class="form-control"
+                   value="{{board.title}}" required>
+        </div>
+        <div class="mb-4">
+            <label for="content" class="form-label">내용</label>
+            <textarea id="content" name="content" class="form-control"
+                      rows="12" required>{{board.content}}</textarea>
+        </div>
+        <div class="form-actions">
+            <a href="/board/{{board.id}}" class="btn btn-outline-dark">취소</a>
+            <button type="submit" class="btn btn-dark">수정 완료</button>
+        </div>
+    </form>
+</section>
+
+{{> layout/footer}}

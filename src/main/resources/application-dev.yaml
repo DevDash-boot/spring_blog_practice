@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.tenco.spring_blog_practice: DEBUG
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:blogdb
+    username: ra
+    password:
+
+  h2:
+    console:
+      enable: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 10
+        format_sql: true
+    defer-datasource-initializaion: true
+
+  sql:
+    init:
+      data-location:
+        - classpath:db/data.sql

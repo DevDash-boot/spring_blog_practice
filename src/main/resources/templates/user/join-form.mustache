@@ -1,0 +1,33 @@
+{{> layout/header}}
+
+<section class="container auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">&lt;/&gt;</div>
+        <span class="eyebrow">WELCOME TO DEVBLOG</span>
+        <h1>회원가입</h1>
+        <p class="auth-description">개발자 커뮤니티에 참여해 보세요.</p>
+
+        <form action="/join" method="post" class="editor-form">
+            <div class="mb-3">
+                <label for="username" class="form-label">아이디</label>
+                <input type="text" id="username" name="username" class="form-control"
+                       placeholder="아이디를 입력하세요." required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" id="email" name="email" class="form-control"
+                       placeholder="example@email.com" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">비밀번호</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="비밀번호를 입력하세요." required>
+            </div>
+            <button type="submit" class="btn btn-dark w-100">회원가입</button>
+        </form>
+
+        <p class="auth-switch">이미 계정이 있으신가요? <a href="/login-form">로그인</a></p>
+    </div>
+</section>
+
+{{> layout/footer}}

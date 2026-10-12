@@ -1,0 +1,61 @@
+{{> layout/header}}
+
+<section class="container content-container">
+    <a href="/board/list" class="back-link">
+        <i class="fa-solid fa-arrow-left me-2"></i> 게시글 목록
+    </a>
+
+    <article class="article-card">
+        <div class="article-header">
+            <span class="category-label">DEVELOPMENT</span>
+            <h1>{{board.title}}</h1>
+            <div class="article-meta">
+                <span><i class="fa-regular fa-user me-1"></i>{{board.user.username}}</span>
+                <span><i class="fa-regular fa-calendar me-1"></i>{{board.createdAt}}</span>
+            </div>
+        </div>
+
+        <div class="article-content">{{board.content}}</div>
+
+        <div class="article-actions">
+            <div class="like-section">
+                <button type="button" id="likeButton" class="btn btn-outline-danger">
+                    <i class="fa-regular fa-heart"></i>
+                    좋아요 <span id="likeCount">{{board.likeCount}}</span>
+                </button>
+            </div>
+            <a href="/board/list" class="btn btn-outline-dark">목록으로</a>
+            {{#isOwner}}
+                <a href="/board/{{board.id}}/update" class="btn btn-dark">수정하기</a>
+                <form action="/board/{{board.id}}/delete" method="post"
+                      onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <button type="submit" class="btn btn-outline-danger">삭제하기</button>
+                </form>
+            {{/isOwner}}
+        </div>
+    </article>
+</section>
+
+<script>
+    document.getElementById('likeButton').addEventListener('click', async function () {
+        const boardId = '{{board.id}}';
+
+        try {
+            const response = await fetch(`/api/boards/${boardId}/like`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                alert('좋아요 처리에 실패했습니다.');
+                return;
+            }
+
+            const data = await response.json();
+            document.getElementById('likeCount').textContent = data.likeCount;
+        } catch (error) {
+            alert('서버와 통신할 수 없습니다.');
+        }
+    });
+</script>
+
+{{> layout/footer}}
