@@ -160,6 +160,13 @@ Windows 환경에서는 다음 명령어를 사용할 수 있습니다.
 - 비밀번호 암호화, 좋아요 중복 방지 및 취소 기능 등은 별도 구현이 필요할 수 있습니다.
 - 실제 서비스에 적용할 경우 인증·인가, 입력값 검증, 보안 설정 등을 추가로 점검해야 합니다.
 
+## 🖥️ 실행 화면
+<img width="1280" height="816" alt="image" src="https://github.com/user-attachments/assets/6623a8e6-5c57-42c6-a0e9-a2cb9eda3bd3" />
+<img width="1280" height="641" alt="image" src="https://github.com/user-attachments/assets/c7bd8f03-2a36-45d6-94fd-1a26a57afec5" />
+<img width="947" height="542" alt="image" src="https://github.com/user-attachments/assets/856b8334-933c-402f-8fbb-97409baaf022" />
+<img width="997" height="822" alt="image" src="https://github.com/user-attachments/assets/67e67451-5201-46d5-8bb3-33884b288aa5" />
+<img width="970" height="613" alt="image" src="https://github.com/user-attachments/assets/054a9415-1e1c-4bff-a55e-e80f9602e9d7" />
+
 ## 👨‍💻 Repository
 
 [GitHub - spring_blog_practice](https://github.com/DevDash-boot/spring_blog_practice)
