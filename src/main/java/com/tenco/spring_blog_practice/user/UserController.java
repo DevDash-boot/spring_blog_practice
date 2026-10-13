@@ -35,27 +35,25 @@ public class UserController {
     @PostMapping("/login")
     public String login(UserRequest.loginDto loginDto, HttpSession session) {
         loginDto.validate();
-        User user = userService.login(loginDto);
-        user.setPassword(null);
-        session.setAttribute(Define.SESSION_USER, user);
+        SessionUserDto sessionUserDto = userService.login(loginDto);
+        session.setAttribute(Define.SESSION_USER, sessionUserDto);
         return "redirect:/";
     }
 
     @GetMapping("/user/update")
     public String updateForm(HttpSession session, Model model) {
-        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
-        User user = userService.findById(sessionUser.getId());
-        model.addAttribute("user", user);
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        UserResponse.updateFormDto userUpdateFormDto = userService.findUpdateForm(sessionUserDto.getId());
+        model.addAttribute("user", userUpdateFormDto);
         return "user/update-form";
     }
 
     @PostMapping("/user/update")
     public String update(UserRequest.updateDto updateDto, HttpSession session) {
         updateDto.validate();
-        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
-        User user = userService.updateById(sessionUser.getId(), updateDto);
-        user.setPassword(null);
-        session.setAttribute(Define.SESSION_USER, user);
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        SessionUserDto updatesessionUserDto = userService.updateById(sessionUserDto.getId(), updateDto);
+        session.setAttribute(Define.SESSION_USER, updatesessionUserDto);
         return "redirect:/";
     }
 

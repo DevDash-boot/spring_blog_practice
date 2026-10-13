@@ -110,6 +110,7 @@ public class GlobalException {
     }
 
     // 기타 에러
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public String exRun(RuntimeException e, HttpServletRequest request, Model model) {
         log.error("=== 예상치 못한 에러 발생 ===");

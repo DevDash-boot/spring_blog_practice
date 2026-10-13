@@ -3,7 +3,9 @@ package com.tenco.spring_blog_practice.reply;
 import com.tenco.spring_blog_practice._core.error.Exception403;
 import com.tenco.spring_blog_practice._core.util.Define;
 import com.tenco.spring_blog_practice.board.Board;
+import com.tenco.spring_blog_practice.board.BoardResponse;
 import com.tenco.spring_blog_practice.board.BoardService;
+import com.tenco.spring_blog_practice.user.SessionUserDto;
 import com.tenco.spring_blog_practice.user.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,59 +27,34 @@ public class ReplyController {
 
     // 댓글 등록
     @PostMapping("/save")
-    public String save(
-            ReplyRequest.saveDto saveDto,
-            @RequestParam Long boardId,
-            HttpSession session
-    ) {
-        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
-
-        if (sessionUser == null) {
+    public String save(ReplyRequest.saveDto saveDto, @RequestParam Long boardId, HttpSession session) {
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        if (sessionUserDto == null) {
             return "redirect:/login";
         }
-
-        Board board = boardService.findById(boardId);
-
-        replyService.save(saveDto, sessionUser, board);
-
+        replyService.save(saveDto, sessionUserDto, boardId);
         return "redirect:/board/" + boardId;
     }
 
     // 댓글 수정
     @PostMapping("/{id}/update")
-    public String update(
-            @PathVariable Long id,
-            ReplyRequest.updateDto updateDto,
-            HttpSession session
-    ) {
-        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
-
-        if (sessionUser == null) {
+    public String update(@PathVariable Long id, ReplyRequest.updateDto updateDto, HttpSession session) {
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        if (sessionUserDto == null) {
             return "redirect:/login";
         }
-
-        Reply reply = replyService.updateById(id, updateDto, sessionUser);
-
-        return "redirect:/board/" + reply.getBoard().getId();
+        Long boardId = replyService.updateById(id, updateDto, sessionUserDto);
+        return "redirect:/board/" + boardId;
     }
 
     // 댓글 삭제
     @PostMapping("/{id}/delete")
-    public String delete(
-            @PathVariable Long id,
-            HttpSession session
-    ) {
-        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
-
-        if (sessionUser == null) {
+    public String delete(@PathVariable Long id, HttpSession session) {
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        if (sessionUserDto == null) {
             return "redirect:/login";
         }
-
-        Reply reply = replyService.findById(id);
-        Long boardId = reply.getBoard().getId();
-
-        replyService.deleteById(id, sessionUser);
-
+        Long boardId = replyService.deleteById(id, sessionUserDto);
         return "redirect:/board/" + boardId;
     }
 }
