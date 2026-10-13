@@ -1,17 +1,11 @@
 package com.tenco.spring_blog_practice.reply;
 
-import com.tenco.spring_blog_practice._core.error.Exception403;
 import com.tenco.spring_blog_practice._core.util.Define;
-import com.tenco.spring_blog_practice.board.Board;
-import com.tenco.spring_blog_practice.board.BoardResponse;
 import com.tenco.spring_blog_practice.board.BoardService;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
-import com.tenco.spring_blog_practice.user.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

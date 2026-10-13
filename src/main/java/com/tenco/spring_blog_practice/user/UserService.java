@@ -46,14 +46,16 @@ public class UserService {
         return new SessionUserDto(user);
     }
 
-    public UserResponse.updateFormDto findUpdateForm(Long userId){
+    public UserResponse.updateFormDto findUpdateForm(Long userId) {
         return new UserResponse.updateFormDto(findById(userId));
     }
 
     @Transactional
     public SessionUserDto updateById(Long id, UserRequest.updateDto updateDto) {
         User user = findById(id);
-        user.update(updateDto.getPassword());
+        if (updateDto.getPassword() != null && !updateDto.getPassword().trim().isEmpty()) {
+            user.update(updateDto.getPassword().trim());
+        }
         return new SessionUserDto(user);
     }
 

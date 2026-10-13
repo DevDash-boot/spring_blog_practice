@@ -30,5 +30,6 @@ spring:
 
   sql:
     init:
+      mode: always
       data-location:
         - classpath:db/data.sql

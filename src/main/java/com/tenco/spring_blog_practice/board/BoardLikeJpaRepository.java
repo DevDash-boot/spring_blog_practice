@@ -1,0 +1,14 @@
+package com.tenco.spring_blog_practice.board;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface BoardLikeJpaRepository
+        extends JpaRepository<BoardLike, Long> {
+
+    Optional<BoardLike> findByBoard_IdAndUser_Id(
+            Long boardId, Long userId);
+
+    long countByBoard_Id(Long boardId);
+}

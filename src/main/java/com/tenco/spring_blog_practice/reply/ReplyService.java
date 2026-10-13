@@ -23,12 +23,14 @@ public class ReplyService {
     private final UserJpaRepository userJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
 
-    // 댓글 목록
-    public List<Reply> findAllByBoardId(Long boardId) {
-        return replyJpaRepository.findAllByBoardId(boardId);
+    // 댓글 목록 조회 및 DTO 변환
+    public List<ReplyResponse> findAllByBoardId(Long boardId, Long sessionUserId) {
+        List<Reply> replyList = replyJpaRepository.findAllByBoardId(boardId);
+        return replyList.stream().map(reply ->
+                new ReplyResponse(reply, sessionUserId)).toList();
     }
 
-    public Reply findById(Long id){
+    public Reply findById(Long id) {
         Reply reply = replyJpaRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("댓글 조회 실패");
@@ -66,7 +68,7 @@ public class ReplyService {
 
     // 댓글 삭제
     @Transactional
-    public Long deleteById(Long id, SessionUserDto sessionUser){
+    public Long deleteById(Long id, SessionUserDto sessionUser) {
         Reply reply = findById(id);
         if (!reply.isOwner(sessionUser.getId())) {
             throw new Exception403("본인이 작성한 댓글만 삭제할 수 있습니다..");

@@ -1,12 +1,9 @@
 package com.tenco.spring_blog_practice.board;
 
-import com.tenco.spring_blog_practice._core.error.Exception403;
 import com.tenco.spring_blog_practice._core.util.Define;
-import com.tenco.spring_blog_practice.reply.Reply;
 import com.tenco.spring_blog_practice.reply.ReplyResponse;
 import com.tenco.spring_blog_practice.reply.ReplyService;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
-import com.tenco.spring_blog_practice.user.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,20 +33,14 @@ public class BoardController {
     public String detail(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
         BoardResponse.DetailDto detailDto = boardService.findById(id);
         SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
-
         boolean isOwner = sessionUserDto != null && detailDto.getUserId().equals(sessionUserDto.getId());
 
         // 게시글별 댓글 조회
-        List<Reply> replyList = replyService.findAllByBoardId(id);
-        List<ReplyResponse> replyResponseList = replyList.stream()
-                .map(reply -> new ReplyResponse(reply, sessionUserDto != null ? sessionUserDto.getId() : null
-                ))
-                .toList();
-
+        Long sessionUserId = sessionUserDto != null ? sessionUserDto.getId() : null;
+        List<ReplyResponse> replyResponseList = replyService.findAllByBoardId(id, sessionUserId);
         model.addAttribute("board", detailDto);
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("replyList", replyResponseList);
-
         return "board/detail";
     }
 

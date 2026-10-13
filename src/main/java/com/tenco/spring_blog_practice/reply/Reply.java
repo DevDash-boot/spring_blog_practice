@@ -1,7 +1,6 @@
 package com.tenco.spring_blog_practice.reply;
 
 import com.tenco.spring_blog_practice.board.Board;
-import com.tenco.spring_blog_practice.board.BoardRequest;
 import com.tenco.spring_blog_practice.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

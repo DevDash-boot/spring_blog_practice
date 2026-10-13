@@ -19,6 +19,7 @@ import java.util.List;
 public class BoardService {
     private final BoardJpaRepository boardJpaRepository;
     private final UserJpaRepository userJpaRepository;
+    private final BoardLikeJpaRepository boardLikeJpaRepository;
 
     // 게시글 저장
     @Transactional
@@ -30,14 +31,15 @@ public class BoardService {
         return savedBoard;
     }
 
-    // 게시글 조회
+    // 게시글 상세 조회
     public BoardResponse.DetailDto findById(Long id) {
         Board board = boardJpaRepository.findByIdJoinUser(id)
-                .orElseThrow(() -> {
-                    log.warn("게시글 조회 실패");
-                    throw new Exception404("게시글을 찾을 수 없습니다.");
-                });
-        return new BoardResponse.DetailDto(board);
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
+        BoardResponse.DetailDto detailDto = new BoardResponse.DetailDto(board);
+        // 좋아요 테이블에서 실제 개수 조회
+        int likeCount = Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(id));
+        detailDto.setLikeCount(likeCount);
+        return detailDto;
     }
 
     // 게시글 목록 조회
@@ -46,10 +48,10 @@ public class BoardService {
         return boardList.stream().map(BoardResponse.ListDto::new).toList();
     }
 
-    public BoardResponse.updateFormDto findByIdAndUpdateForm(Long id, Long userId){
+    public BoardResponse.updateFormDto findByIdAndUpdateForm(Long id, Long userId) {
         Board board = boardJpaRepository.findByIdJoinUser(id)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-        if(!board.isOwner(userId)){
+        if (!board.isOwner(userId)) {
             throw new Exception403("게시글 수정 권한이 없습니다.");
         }
         return new BoardResponse.updateFormDto(board);
@@ -77,10 +79,23 @@ public class BoardService {
     }
 
     @Transactional
-    public Board like(Long id) {
-        Board board = boardJpaRepository.findByIdJoinUser(id)
+    public int like(Long boardId, SessionUserDto sessionUser) {
+        Board board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-        board.setLikeCount(board.getLikeCount() + 1);
-        return board;
+
+        Long userId = sessionUser.getId();
+
+        var existingLike = boardLikeJpaRepository.findByBoard_IdAndUser_Id(boardId, userId);
+
+        if (existingLike.isPresent()) {
+            // 이미 좋아요를 눌렀다면 취소
+            boardLikeJpaRepository.delete(existingLike.get());
+        } else {
+            // 좋아요 기록 등록
+            User user = userJpaRepository.getReferenceById(userId);
+            boardLikeJpaRepository.save(new BoardLike(board, user));
+        }
+
+        return Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(boardId));
     }
 }

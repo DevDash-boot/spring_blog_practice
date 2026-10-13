@@ -14,99 +14,40 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 @ControllerAdvice
 public class GlobalException {
-    // 400
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     @ExceptionHandler(Exception400.class)
-    public String ex400(Exception400 e, HttpServletRequest request) {
-        log.warn("=== 400 Bad Request 에러 발생 ===");
-        log.warn("요청 URL : {}", request.getRequestURL());
-        log.warn("에러 메시지 : {}", e.getMessage());
-        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
-        String msg = e.getMessage().replace("'", "\\");    // 따옴표 깨짐 방지
-
-        return """
-                <script>
-                    alert('%s');
-                    history.back();
-                </script>
-                """.formatted(msg);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handle400(Exception400 e, Model model) {
+        model.addAttribute("msg", e.getMessage());
+        return "err/400";
     }
 
-    // 401
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
     @ExceptionHandler(Exception401.class)
-    public String ex401(Exception401 e, HttpServletRequest request) {
-        log.warn("=== 401 Unauthorized 에러 발생 ===");
-        log.warn("요청 URL : {}", request.getRequestURL());
-        log.warn("에러 메시지 : {}", e.getMessage());
-        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
-        String msg = e.getMessage().replace("'", "\\");    // 따옴표 깨짐 방지
-
-        return """
-                <script>
-                    alert('%s');
-                    history.back();
-                </script>
-                """.formatted(msg);
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handle401(Exception401 e, Model model) {
+        model.addAttribute("msg", e.getMessage());
+        return "err/401";
     }
 
-    // 403
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ResponseBody
     @ExceptionHandler(Exception403.class)
-    public String ex403(Exception403 e, HttpServletRequest request) {
-        log.warn("=== 403 Forbidden 에러 발생 ===");
-        log.warn("요청 URL : {}", request.getRequestURL());
-        log.warn("에러 메시지 : {}", e.getMessage());
-        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
-        String msg = e.getMessage().replace("'", "\\");    // 따옴표 깨짐 방지
-
-        return """
-                <script>
-                    alert('%s');
-                    history.back();
-                </script>
-                """.formatted(msg);
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handle403(Exception403 e, Model model) {
+        model.addAttribute("msg", e.getMessage());
+        return "err/403";
     }
 
-    // 404
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
     @ExceptionHandler(Exception404.class)
-    public String ex404(Exception404 e, HttpServletRequest request) {
-        log.warn("=== 404 Not Found 에러 발생 ===");
-        log.warn("요청 URL : {}", request.getRequestURL());
-        log.warn("에러 메시지 : {}", e.getMessage());
-        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
-        String msg = e.getMessage().replace("'", "\\");    // 따옴표 깨짐 방지
-
-        return """
-                <script>
-                    alert('%s');
-                    history.back();
-                </script>
-                """.formatted(msg);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handle404(Exception404 e, Model model) {
+        model.addAttribute("msg", e.getMessage());
+        return "err/404";
     }
 
-    // 500
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    @ExceptionHandler(Exception500.class)
-    public String ex500(Exception500 e, HttpServletRequest request) {
-        log.warn("=== 500 Internal Server Error 에러 발생 ===");
-        log.warn("요청 URL : {}", request.getRequestURL());
-        log.warn("에러 메시지 : {}", e.getMessage());
-        log.warn("스택 트레이스 : ", e);
-        String msg = e.getMessage().replace("'", "\\");    // 따옴표 깨짐 방지
-
-        return """
-                <script>
-                    alert('%s');
-                    history.back();
-                </script>
-                """.formatted(msg);
+    public String handle500(Exception e, Model model) {
+        log.error("예상하지 못한 서버 오류", e);
+        model.addAttribute("msg", "서버 내부 오류가 발생했습니다.");
+        return "err/500";
     }
 
     // 기타 에러

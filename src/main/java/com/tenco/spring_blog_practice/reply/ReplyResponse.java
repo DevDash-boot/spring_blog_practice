@@ -1,6 +1,7 @@
 package com.tenco.spring_blog_practice.reply;
 
 import lombok.Data;
+
 @Data
 public class ReplyResponse {
     private Long id;
