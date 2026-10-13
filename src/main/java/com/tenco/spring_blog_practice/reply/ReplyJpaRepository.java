@@ -6,8 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ReplyJpaRepository
-        extends JpaRepository<Reply, Long> {
+public interface ReplyJpaRepository extends JpaRepository<Reply, Long> {
 
     @Query("""
             SELECT r
@@ -18,4 +17,7 @@ public interface ReplyJpaRepository
             """)
     List<Reply> findAllByBoardId(
             @Param("boardId") Long boardId);
+
+    // 특정 게시글에 달린 댓글 전체 삭제
+    void deleteByBoard_Id(Long boardId);
 }

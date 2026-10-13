@@ -1,5 +1,11 @@
 {{> layout/header}}
 
+{{#errorMessage}}
+    <div class="alert alert-danger" role="alert">
+        {{errorMessage}}
+    </div>
+{{/errorMessage}}
+
 <section class="container form-container">
     <div class="form-heading">
         <span class="eyebrow">WELCOME BACK</span>

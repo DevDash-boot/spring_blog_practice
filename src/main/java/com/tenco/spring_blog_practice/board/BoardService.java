@@ -2,6 +2,7 @@ package com.tenco.spring_blog_practice.board;
 
 import com.tenco.spring_blog_practice._core.error.Exception403;
 import com.tenco.spring_blog_practice._core.error.Exception404;
+import com.tenco.spring_blog_practice.reply.ReplyJpaRepository;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
 import com.tenco.spring_blog_practice.user.User;
 import com.tenco.spring_blog_practice.user.UserJpaRepository;
@@ -20,6 +21,7 @@ public class BoardService {
     private final BoardJpaRepository boardJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final BoardLikeJpaRepository boardLikeJpaRepository;
+    private final ReplyJpaRepository replyJpaRepository;
 
     // 게시글 저장
     @Transactional
@@ -36,9 +38,9 @@ public class BoardService {
         Board board = boardJpaRepository.findByIdJoinUser(id)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
         BoardResponse.DetailDto detailDto = new BoardResponse.DetailDto(board);
-        // 좋아요 테이블에서 실제 개수 조회
-        int likeCount = Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(id));
-        detailDto.setLikeCount(likeCount);
+        long likeCount = boardLikeJpaRepository.countByBoard_Id(id);
+        log.info("게시글 ID: {}, 좋아요 개수: {}", id, likeCount);
+        detailDto.setLikeCount(Math.toIntExact(likeCount));
         return detailDto;
     }
 
@@ -70,12 +72,19 @@ public class BoardService {
 
     @Transactional
     public void deleteById(Long id, SessionUserDto sessionUser) {
+        // 1. 게시글 조회
         Board board = boardJpaRepository.findByIdJoinUser(id)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
+        // 2. 작성자 권한 확인
         if (!board.isOwner(sessionUser.getId())) {
-            throw new Exception403("본인이 작성한 게시글만 삭제할 수 있습니다..");
+            throw new Exception403("본인이 작성한 게시글만 삭제할 수 있습니다.");
         }
-        boardJpaRepository.deleteById(id);
+        // 3. 댓글 삭제
+        replyJpaRepository.deleteByBoard_Id(id);
+        // 4. 좋아요 삭제
+        boardLikeJpaRepository.deleteByBoard_Id(id);
+        // 5. 게시글 삭제
+        boardJpaRepository.delete(board);
     }
 
     @Transactional

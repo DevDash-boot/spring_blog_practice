@@ -1,5 +1,6 @@
 package com.tenco.spring_blog_practice.user;
 
+import com.tenco.spring_blog_practice._core.error.Exception400;
 import com.tenco.spring_blog_practice._core.util.Define;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +34,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(UserRequest.loginDto loginDto, HttpSession session) {
-        loginDto.validate();
-        SessionUserDto sessionUserDto = userService.login(loginDto);
-        session.setAttribute(Define.SESSION_USER, sessionUserDto);
-        return "redirect:/";
+    public String login(UserRequest.loginDto dto, HttpSession session, Model model) {
+        try {
+            SessionUserDto sessionUser = userService.login(dto);
+            session.setAttribute(Define.SESSION_USER, sessionUser);
+            return "redirect:/";
+        } catch (Exception400 e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "user/login-form";
+        }
     }
 
     @GetMapping("/user/update")

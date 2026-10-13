@@ -31,10 +31,6 @@ public class Board {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private int likeCount = 0;
-
     @Builder
     public Board(String title, String content, User user) {
         this.title = title;
