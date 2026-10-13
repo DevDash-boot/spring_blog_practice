@@ -1,9 +1,11 @@
 package com.tenco.spring_blog_practice.reply;
 
 import com.tenco.spring_blog_practice.board.Board;
+import com.tenco.spring_blog_practice.board.BoardRequest;
 import com.tenco.spring_blog_practice.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,7 +22,6 @@ public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
 
     private String content;
 
@@ -35,4 +36,17 @@ public class Reply {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Builder
+    public Reply(String content) {
+        this.content = content;
+    }
+
+    public boolean isOwner(Long userId) {
+        return this.user != null && this.user.getId().equals(userId);
+    }
+
+    public void update(ReplyRequest.updateDto updateDto) {
+        updateDto.validate();
+        this.content = updateDto.getContent().trim();
+    }
 }

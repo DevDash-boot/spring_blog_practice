@@ -2,6 +2,9 @@ package com.tenco.spring_blog_practice.board;
 
 import com.tenco.spring_blog_practice._core.error.Exception403;
 import com.tenco.spring_blog_practice._core.util.Define;
+import com.tenco.spring_blog_practice.reply.Reply;
+import com.tenco.spring_blog_practice.reply.ReplyResponse;
+import com.tenco.spring_blog_practice.reply.ReplyService;
 import com.tenco.spring_blog_practice.user.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.List;
 @Slf4j
 public class BoardController {
     private final BoardService boardService;
+    private final ReplyService replyService;
 
     @GetMapping({"/", "/board/list"})
     public String list(Model model) {
@@ -37,8 +41,19 @@ public class BoardController {
         boolean isOwner = sessionUser != null
                 && board.isOwner(sessionUser.getId());
 
+        // 게시글별 댓글 조회
+        List<Reply> replyList = replyService.findAllByBoardId(id);
+        List<ReplyResponse> replyResponseList = replyList.stream()
+                .map(reply -> new ReplyResponse(
+                        reply,
+                        sessionUser != null ? sessionUser.getId() : null
+                ))
+                .toList();
+
+
         model.addAttribute("board", board);
         model.addAttribute("isOwner", isOwner);
+        model.addAttribute("replyList", replyResponseList);
 
         return "board/detail";
     }
@@ -82,3 +97,4 @@ public class BoardController {
         return "redirect:/";
     }
 }
+

@@ -5,6 +5,7 @@
         <i class="fa-solid fa-arrow-left me-2"></i> 게시글 목록
     </a>
 
+    <!-- 게시글 상세 -->
     <article class="article-card">
         <div class="article-header">
             <span class="category-label">DEVELOPMENT</span>
@@ -24,7 +25,9 @@
                     좋아요 <span id="likeCount">{{board.likeCount}}</span>
                 </button>
             </div>
+
             <a href="/board/list" class="btn btn-outline-dark">목록으로</a>
+
             {{#isOwner}}
                 <a href="/board/{{board.id}}/update" class="btn btn-dark">수정하기</a>
                 <form action="/board/{{board.id}}/delete" method="post"
@@ -34,36 +37,103 @@
             {{/isOwner}}
         </div>
     </article>
-    <div class="card-footer mt-2">
-        <b>댓글 목록</b>
-    </div>
 
-    <div class="list-group">
-        {{#replyList}}
-            <div class="list-group-item">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <b>{{user.username}}</b>
-                        <span>{{content}}</span>
-                    </div>
-                    {{#isOwner}}
-                        <div>
-                            <a href="/reply/{{id}}/update-form" class="btn btn-warning btn-sm">수정</a>
-                            <form action="/reply/{{id}}/delete" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-danger btn-sm">삭제</button>
-                            </form>
+    <!-- 댓글 영역 -->
+    <section class="mt-4">
+        <div class="card">
+            <div class="card-header">
+                <b>댓글 작성</b>
+            </div>
+
+            <div class="card-body">
+                {{#sessionUser}}
+                    <form action="/reply/save" method="post">
+                        <input type="hidden" name="boardId" value="{{board.id}}">
+
+                        <div class="mb-3">
+                            <textarea
+                                    name="content"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="댓글을 입력하세요."
+                                    required></textarea>
                         </div>
-                    {{/isOwner}}
-                </div>
-            </div>
-        {{/replyList}}
 
-        {{^replyList}}
-            <div class="list-group-item">
-                등록된 댓글이 없습니다.
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">댓글 등록</button>
+                        </div>
+                    </form>
+                {{/sessionUser}}
+
+                {{^sessionUser}}
+                    <p class="mb-0">
+                        댓글을 작성하려면 <a href="/login">로그인</a>해 주세요.
+                    </p>
+                {{/sessionUser}}
             </div>
-        {{/replyList}}
-    </div>
+        </div>
+    </section>
+
+    <!-- 댓글 목록 -->
+    <section class="mt-4">
+        <div class="card-header mb-2">
+            <b>댓글 목록</b>
+            <span class="text-muted">({{replyList.size}})</span>
+        </div>
+
+        <div class="list-group">
+            {{#replyList}}
+                <div class="list-group-item reply-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <b>{{username}}</b>
+                            <span class="reply-content">{{content}}</span>
+
+                            {{#isOwner}}
+                                <form action="/reply/{{id}}/update"
+                                      method="post"
+                                      class="reply-edit-form d-none mt-2">
+
+                        <textarea name="content"
+                                  class="form-control mb-2"
+                                  rows="2"
+                                  required>{{content}}</textarea>
+
+                                    <div class="text-end">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-sm">저장</button>
+                                        <button type="button"
+                                                class="btn btn-secondary btn-sm cancel-edit">취소</button>
+                                    </div>
+                                </form>
+                            {{/isOwner}}
+                        </div>
+
+                        {{#isOwner}}
+                            <div class="ms-2 text-nowrap reply-actions">
+                                <button type="button"
+                                        class="btn btn-warning btn-sm edit-reply">수정</button>
+
+                                <form action="/reply/{{id}}/delete"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm">삭제</button>
+                                </form>
+                            </div>
+                        {{/isOwner}}
+                    </div>
+                </div>
+            {{/replyList}}
+
+            {{^replyList}}
+                <div class="list-group-item text-center text-muted py-4">
+                    등록된 댓글이 없습니다.
+                </div>
+            {{/replyList}}
+        </div>
+    </section>
 </section>
 
 <script>
@@ -85,6 +155,26 @@
         } catch (error) {
             alert('서버와 통신할 수 없습니다.');
         }
+    });
+
+    // 댓글 수정 입력창 열기
+    document.querySelectorAll('.edit-reply').forEach(button => {
+        button.addEventListener('click', function () {
+            const item = this.closest('.reply-item');
+            item.querySelector('.reply-content').classList.add('d-none');
+            item.querySelector('.reply-edit-form').classList.remove('d-none');
+            item.querySelector('.reply-actions').classList.add('d-none');
+        });
+    });
+
+    // 댓글 수정 취소
+    document.querySelectorAll('.cancel-edit').forEach(button => {
+        button.addEventListener('click', function () {
+            const item = this.closest('.reply-item');
+            item.querySelector('.reply-content').classList.remove('d-none');
+            item.querySelector('.reply-edit-form').classList.add('d-none');
+            item.querySelector('.reply-actions').classList.remove('d-none');
+        });
     });
 </script>
 
