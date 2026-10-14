@@ -1,13 +1,13 @@
 # Spring Blog Practice
 
-Spring Boot와 Spring Data JPA를 활용하여 구현한 블로그 웹 프로젝트입니다. 게시글 CRUD, 회원 로그인, 작성자 권한 검사, 좋아요 기능 등을 구현하며 웹 애플리케이션의 기본적인 구조와 데이터 처리 과정을 학습했습니다.
+Spring Boot와 Spring Data JPA를 활용하여 구현한 블로그 웹 프로젝트입니다. 게시글 CRUD, 회원 로그인, 작성자 권한 검사, 좋아요 및 댓글 기능 등을 구현하며 웹 애플리케이션의 기본적인 구조와 데이터 처리 과정을 학습했습니다.
 
 ## 📌 프로젝트 소개
 
 - **프로젝트명:** Spring Blog Practice
 - **목적:** Spring Boot 기반 웹 애플리케이션 개발 학습
 - **개발 환경:** IntelliJ IDEA
-- **주요 기능:** 회원 관리, 게시글 관리, 좋아요 기능
+- **주요 기능:** 회원 관리, 게시글 관리, 좋아요, 댓글 관리
 
 ## 🛠️ 기술 스택
 
@@ -39,13 +39,22 @@ Spring Boot와 Spring Data JPA를 활용하여 구현한 블로그 웹 프로젝
 
 ### 3. 좋아요 기능
 - 게시글별 좋아요 수 표시
-- 비동기 요청을 통한 좋아요 수 증가
+- 비동기 요청을 통한 좋아요 수 변경
 - JavaScript Fetch API를 활용한 서버 통신
 
-### 4. 예외 처리 및 요청 제어
+### 4. 댓글 기능
+- 게시글 상세 화면에서 댓글 목록 조회
+- 게시글에 댓글 작성
+- 댓글 수정 및 삭제
+- 댓글 작성자 본인 여부 확인을 통한 수정·삭제 권한 검사
+- 댓글 수정 및 삭제를 위한 별도 요청 처리
+- Spring Data JPA를 활용한 댓글 데이터 관리
+
+### 5. 예외 처리 및 요청 제어
 - 사용자 정의 예외 처리
 - 공통 예외 처리 구조 학습
-- 인터셉터를 활용한 요청 제어 학습
+- 인터셉터를 활용한 요청 제어
+- 로그인 여부 및 작성자 권한에 따른 접근 제어
 
 ## 🏗️ 프로젝트 구조
 
@@ -62,6 +71,12 @@ src/main/java/com/tenco/spring_blog_practice/
 │   ├── BoardService.java
 │   ├── BoardJpaRepository.java
 │   └── BoardRequest.java
+├── reply/
+│   ├── Reply.java
+│   ├── ReplyController.java
+│   ├── ReplyService.java
+│   ├── ReplyJpaRepository.java
+│   └── ReplyRequest.java
 └── user/
     ├── User.java
     ├── UserController.java
@@ -70,7 +85,7 @@ src/main/java/com/tenco/spring_blog_practice/
     └── UserRequest.java
 ```
 
-> 실제 프로젝트의 패키지와 파일 구성에 따라 구조는 달라질 수 있습니다.
+※ 실제 프로젝트의 패키지 및 파일 구성에 따라 일부 항목은 달라질 수 있습니다.
 
 ## 🔄 기본 처리 흐름
 
@@ -92,6 +107,24 @@ Database
 - **Entity:** 데이터베이스 테이블과 객체를 매핑합니다.
 - **Mustache:** 서버에서 전달받은 데이터를 화면에 표시합니다.
 
+### 댓글 처리 흐름
+
+```text
+게시글 상세 화면
+    ↓
+댓글 목록 조회 및 댓글 작성
+    ↓
+ReplyController
+    ↓
+ReplyService
+    ↓
+ReplyJpaRepository
+    ↓
+Database
+```
+
+댓글 수정 및 삭제 시에는 댓글 작성자와 로그인 사용자가 동일한지 확인하여 권한이 있는 사용자만 작업할 수 있도록 처리합니다.
+
 ## 🚀 실행 방법
 
 ### 1. 프로젝트 클론
@@ -103,9 +136,7 @@ cd spring_blog_practice
 
 ### 2. 데이터베이스 설정
 
-MySQL에 사용할 데이터베이스를 생성하고 프로젝트의 환경 설정에 맞게 연결 정보를 지정합니다.
-
-예시:
+MySQL에 데이터베이스를 생성합니다.
 
 ```sql
 CREATE DATABASE myblog2;
@@ -139,7 +170,11 @@ Windows 환경에서는 다음 명령어를 사용할 수 있습니다.
 .\gradlew.bat bootRun
 ```
 
-서버가 실행되면 브라우저에서 설정된 포트로 접속합니다. 기본 포트를 사용하는 경우 `http://localhost:8080`입니다.
+서버 실행 후 브라우저에서 접속합니다.
+
+```text
+http://localhost:8080
+```
 
 ## 📚 학습 내용
 
@@ -147,8 +182,9 @@ Windows 환경에서는 다음 명령어를 사용할 수 있습니다.
 - 계층형 아키텍처(Controller-Service-Repository)
 - JPA Entity와 테이블 매핑
 - Spring Data JPA를 이용한 CRUD
-- 연관관계 매핑과 `@ManyToOne`
+- 엔티티 간 연관관계 매핑
 - 세션을 활용한 로그인 상태 관리
+- 게시글 및 댓글 작성자 권한 검사
 - 사용자 정의 예외와 공통 예외 처리
 - 트랜잭션과 영속성 컨텍스트
 - Fetch API를 이용한 비동기 통신
@@ -161,11 +197,19 @@ Windows 환경에서는 다음 명령어를 사용할 수 있습니다.
 - 실제 서비스에 적용할 경우 인증·인가, 입력값 검증, 보안 설정 등을 추가로 점검해야 합니다.
 
 ## 🖥️ 실행 화면
+
 <img width="1280" height="816" alt="image" src="https://github.com/user-attachments/assets/6623a8e6-5c57-42c6-a0e9-a2cb9eda3bd3" />
+
 <img width="1280" height="641" alt="image" src="https://github.com/user-attachments/assets/c7bd8f03-2a36-45d6-94fd-1a26a57afec5" />
+
 <img width="947" height="542" alt="image" src="https://github.com/user-attachments/assets/856b8334-933c-402f-8fbb-97409baaf022" />
+
 <img width="997" height="822" alt="image" src="https://github.com/user-attachments/assets/67e67451-5201-46d5-8bb3-33884b288aa5" />
+
 <img width="970" height="613" alt="image" src="https://github.com/user-attachments/assets/054a9415-1e1c-4bff-a55e-e80f9602e9d7" />
+
+<img width="914" height="845" alt="image" src="https://github.com/user-attachments/assets/82721396-410c-44da-a087-11b432e735b1" />
+
 
 ## 👨‍💻 Repository
 
