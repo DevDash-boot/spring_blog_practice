@@ -16,28 +16,28 @@ public class GlobalException {
     @ExceptionHandler(Exception400.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handle400(Exception400 e, Model model) {
-        model.addAttribute("msg", e.getMessage());
+        model.addAttribute("errorMessage", e.getMessage());
         return "err/400";
     }
 
     @ExceptionHandler(Exception401.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handle401(Exception401 e, Model model) {
-        model.addAttribute("msg", e.getMessage());
+        model.addAttribute("errorMessage", e.getMessage());
         return "err/401";
     }
 
     @ExceptionHandler(Exception403.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String handle403(Exception403 e, Model model) {
-        model.addAttribute("msg", e.getMessage());
+        model.addAttribute("errorMessage", e.getMessage());
         return "err/403";
     }
 
     @ExceptionHandler(Exception404.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handle404(Exception404 e, Model model) {
-        model.addAttribute("msg", e.getMessage());
+        model.addAttribute("errorMessage", e.getMessage());
         return "err/404";
     }
 
@@ -45,7 +45,7 @@ public class GlobalException {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handle500(Exception e, Model model) {
         log.error("예상하지 못한 서버 오류", e);
-        model.addAttribute("msg", "서버 내부 오류가 발생했습니다.");
+        model.addAttribute("errorMessage", "서버 내부 오류가 발생했습니다.");
         return "err/500";
     }
 
