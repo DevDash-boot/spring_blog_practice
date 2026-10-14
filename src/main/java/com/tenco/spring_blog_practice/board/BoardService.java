@@ -8,6 +8,9 @@ import com.tenco.spring_blog_practice.user.User;
 import com.tenco.spring_blog_practice.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +48,16 @@ public class BoardService {
     }
 
     // 게시글 목록 조회
-    public List<BoardResponse.ListDto> findAll() {
-        List<Board> boardList = boardJpaRepository.findAllJoinUser();
-        return boardList.stream().map(BoardResponse.ListDto::new).toList();
+//    public List<BoardResponse.ListDto> findAll() {
+//        List<Board> boardList = boardJpaRepository.findAllJoinUser();
+//        return boardList.stream().map(BoardResponse.ListDto::new).toList();
+//    }
+    public Page<BoardResponse.ListDto> findAll(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Board> boardPage = boardJpaRepository.findAllJoinUser(pageable);
+        // 조회한 객체들 BoardResponse.ListDto 객체로 변환함녀서 페이지 정보를 유지
+        return boardPage.map(BoardResponse.ListDto::new);
+        // map(board -> new BoardResponse.ListDto(board)); 람다식 형태
     }
 
     public BoardResponse.updateFormDto findByIdAndUpdateForm(Long id, Long userId) {
