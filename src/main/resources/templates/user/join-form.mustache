@@ -7,7 +7,7 @@
         <h1>회원가입</h1>
         <p class="auth-description">개발자 커뮤니티에 참여해 보세요.</p>
 
-        <form action="/join" method="post" class="editor-form">
+        <form action="/join" method="post" class="editor-form" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="username" class="form-label">아이디</label>
                 <input type="text" id="username" name="username" class="form-control"
@@ -22,6 +22,11 @@
                 <label for="password" class="form-label">비밀번호</label>
                 <input type="password" id="password" name="password" class="form-control"
                        placeholder="비밀번호를 입력하세요." required>
+            </div>
+            <div class="mb-4">
+                <input type="file" id="profileImage" name="profileImage" class="form-control"
+                       accept="image/**">
+                <small>JPG, PNG, GIF, WEBP 파일만 올릴 수 있습니다.(선택 사항)</small>
             </div>
             <button type="submit" class="btn btn-dark w-100">회원가입</button>
         </form>

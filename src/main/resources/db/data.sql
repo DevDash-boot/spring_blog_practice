@@ -25,6 +25,13 @@ VALUES
     ('geonwoo', '1234', 'geonwoo@tenco.com', NOW()),
     ('harin', '1234', 'harin@tenco.com', NOW());
 
+-- 1-1. 사용자 역할 (admin 은 관리자이면서 일반 사용자)
+INSERT INTO user_role_tb (user_id, role) VALUES (1, 'ADMIN');
+INSERT INTO user_role_tb (user_id, role) VALUES (1, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (2, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (3, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (4, 'USER');
+
 -- =========================================
 -- 2. 게시글 40개
 -- user_id는 위 사용자 등록 순서 기준

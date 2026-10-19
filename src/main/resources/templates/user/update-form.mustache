@@ -4,28 +4,83 @@
     <div class="form-heading">
         <span class="eyebrow">ACCOUNT SETTINGS</span>
         <h1>내 정보 수정</h1>
-        <p>회원 정보를 확인하고 필요한 내용을 수정하세요.</p>
+        <p>비밀번호와 프로필 이미지를 수정하세요.</p>
     </div>
 
-    <form action="/user/update" method="post" class="editor-form">
+    <div class="text-center mb-4">
+        {{#user.profileImage}}
+            <img src="/images/{{user.profileImage}}"
+                 alt="프로필 이미지"
+                 class="rounded-circle border"
+                 style="width: 160px; height: 160px; object-fit: cover;">
+
+            <form action="/user/profile-image/delete"
+                  method="post"
+                  class="mt-3">
+                <button type="submit"
+                        class="btn btn-outline-danger btn-sm"
+                        onclick="return confirm('프로필 이미지를 삭제하시겠습니까?');">
+                    프로필 이미지 삭제
+                </button>
+            </form>
+        {{/user.profileImage}}
+
+        {{^user.profileImage}}
+            <div class="rounded-circle border bg-light d-inline-flex
+                        align-items-center justify-content-center"
+                 style="width: 160px; height: 160px;">
+                <span class="text-secondary">프로필 이미지 없음</span>
+            </div>
+        {{/user.profileImage}}
+    </div>
+
+    <form action="/user/update"
+          method="post"
+          class="editor-form"
+          enctype="multipart/form-data">
+
         <div class="mb-4">
             <label for="username" class="form-label">아이디</label>
-            <input type="text" id="username" name="username" class="form-control"
-                   value="{{user.username}}" readonly>
+            <input type="text"
+                   id="username"
+                   class="form-control"
+                   value="{{user.username}}"
+                   readonly>
         </div>
+
         <div class="mb-4">
             <label for="email" class="form-label">이메일</label>
-            <input type="email" id="email" name="email" class="form-control"
-                   value="{{user.email}}" required>
+            <input type="email"
+                   id="email"
+                   class="form-control"
+                   value="{{user.email}}"
+                   readonly>
         </div>
+
         <div class="mb-4">
             <label for="password" class="form-label">새 비밀번호</label>
-            <input type="password" id="password" name="password"
-                   class="form-control" placeholder="변경할 비밀번호 입력">
+            <input type="password"
+                   id="password"
+                   name="password"
+                   class="form-control"
+                   placeholder="변경할 비밀번호를 입력하세요.">
             <div class="form-text">변경하지 않으려면 비워 두세요.</div>
         </div>
+
+        <div class="mb-4">
+            <label for="profileImage" class="form-label">새 프로필 이미지</label>
+            <input type="file"
+                   id="profileImage"
+                   name="profileImage"
+                   class="form-control"
+                   accept=".jpg,.jpeg,.png,.gif,.webp">
+            <div class="form-text">
+                새 이미지를 선택하지 않으면 기존 이미지가 유지됩니다.
+            </div>
+        </div>
+
         <div class="form-actions">
-            <a href="/board/list" class="btn btn-outline-dark">취소</a>
+            <a href="/user/detail" class="btn btn-outline-dark">취소</a>
             <button type="submit" class="btn btn-dark">정보 수정</button>
         </div>
     </form>

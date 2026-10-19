@@ -15,28 +15,40 @@
             <a class="navbar-brand" href="/">
                 <span class="brand-mark">&lt;/&gt;</span> DevBlog
             </a>
+
             <button class="navbar-toggler" type="button"
                     data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                     aria-controls="mainNavbar" aria-expanded="false"
                     aria-label="메뉴 열기">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/board/list">게시글</a>
                     </li>
+
                     {{#sessionUser}}
                         <li class="nav-item">
                             <a class="nav-link" href="/board/save">글쓰기</a>
                         </li>
+
+                        {{#isAdmin}}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/dashboard">관리자</a>
+                            </li>
+                        {{/isAdmin}}
                     {{/sessionUser}}
                 </ul>
-                <div class="navbar-actions">
 
+                <div class="navbar-actions">
                     {{#sessionUser}}
-                        <span class="user-greeting">{{sessionUser.username}}님</span>
-                        <a class="btn btn-outline-dark btn-sm" href="/user/update">내 정보</a>
+                        <span class="user-greeting">{{username}}님</span>
+                        <span class="badge {{#admin}}bg-danger{{/admin}}{{^admin}}bg-secondary{{/admin}}">
+                            {{roleDisplay}}
+                        </span>
+                        <a class="btn btn-outline-dark btn-sm" href="/user/detail">내 정보</a>
                         <a class="btn btn-dark btn-sm" href="/logout">로그아웃</a>
                     {{/sessionUser}}
 
@@ -44,10 +56,10 @@
                         <a class="btn btn-outline-dark btn-sm" href="/login">로그인</a>
                         <a class="btn btn-dark btn-sm" href="/join">회원가입</a>
                     {{/sessionUser}}
-
                 </div>
             </div>
         </div>
     </nav>
 </header>
+
 <main class="site-main">

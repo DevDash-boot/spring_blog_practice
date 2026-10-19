@@ -1,0 +1,53 @@
+
+{{> layout/header}}
+
+<section class="container form-container d-flex flex-column align-items-center py-5">
+    <div class="w-100" style="max-width: 480px;">
+        <div class="form-heading mb-4">
+            <span class="eyebrow">MY ACCOUNT</span>
+            <h1>마이페이지</h1>
+            <p>내 회원 정보를 확인하세요.</p>
+        </div>
+
+        <div class="auth-card w-100">
+            <div class="text-center mb-4">
+                {{#user.profileImage}}
+                    <img src="/images/{{user.profileImage}}"
+                         alt="프로필 이미지"
+                         class="rounded-circle border"
+                         style="width: 140px; height: 140px; object-fit: cover;">
+                {{/user.profileImage}}
+
+                {{^user.profileImage}}
+                    <div class="rounded-circle border bg-light d-inline-flex
+                                align-items-center justify-content-center"
+                         style="width: 140px; height: 140px;">
+                        <span class="text-secondary">프로필 이미지 없음</span>
+                    </div>
+                {{/user.profileImage}}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">아이디</label>
+                <p class="form-control-plaintext">{{user.username}}</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">이메일</label>
+                <p class="form-control-plaintext">{{user.email}}</p>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">가입일</label>
+                <p class="form-control-plaintext">{{user.createdAt}}</p>
+            </div>
+
+            <div class="form-actions d-flex justify-content-end gap-2">
+                <a href="/user/update" class="btn btn-dark">회원 정보 수정</a>
+                <a href="/board/list" class="btn btn-outline-dark">목록으로</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{> layout/footer}}
