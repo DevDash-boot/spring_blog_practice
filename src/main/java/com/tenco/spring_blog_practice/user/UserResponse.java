@@ -1,5 +1,6 @@
 package com.tenco.spring_blog_practice.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tenco.spring_blog_practice._core.util.MyDataUtil;
 import lombok.Data;
 
@@ -17,7 +18,7 @@ public class UserResponse {
             this.id = user.getId();
             this.username = user.getUsername();
             this.email = user.getEmail();
-            this.profileImage = user.getProfileImage();
+            this.profileImage = user.getProfilePath();
             this.createdAt =  MyDataUtil.timestampFormat(user.getCreatedAt());
         }
     }
@@ -48,7 +49,43 @@ public class UserResponse {
             this.id = user.getId();
             this.username = user.getUsername();
             this.email = user.getEmail();
-            this.profileImage = user.getProfileImage();
+            this.profileImage = user.getProfilePath();
+        }
+    }
+
+    // 카카오 액세스 토큰 응답 DTO
+    @Data
+    public static class OauthToken {
+        @JsonProperty("access_token")
+        private String accessToken;
+        @JsonProperty("token_type")
+        private String tokenType;
+        @JsonProperty("refresh_token")
+        private String refreshToken;
+        @JsonProperty("expires_in")
+        private Long expiresIn;
+        @JsonProperty("scope")
+        private String scope;
+        @JsonProperty("refresh_token_expires_in")
+        private Long refreshTokenExpiresIn;
+    }
+
+    // 카카오 소셜 로그인 사용자 정보 DTO
+    @Data
+    public static class KakaoUserInfo {
+        private Long id;
+        @JsonProperty("connected_at")
+        private String connectedAt;
+        private Properties properties;
+        @JsonProperty("kakao_account")
+        private Object kakaoAccount;
+        @Data
+        public static class Properties {
+            private String nickname;
+            @JsonProperty("profile_image")
+            private String profileImage;
+            @JsonProperty("thumbnail_image")
+            private String thumbnailImage;
         }
     }
 }

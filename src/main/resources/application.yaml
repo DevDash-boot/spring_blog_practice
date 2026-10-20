@@ -15,3 +15,10 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+
+# 초기 파라미터 설정
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    client-secret: ${KAKAO_CLIENT_SECRET}
+    redirect-uri: ${REDIRECT_URI}
