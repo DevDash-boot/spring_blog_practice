@@ -7,7 +7,10 @@ import com.tenco.spring_blog_practice._core.intercepter.SessionUserModleIntercep
 import com.tenco.spring_blog_practice._core.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -45,5 +48,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/board/list", "/board/{id:\\d+}");
         registry.addInterceptor(ipBlockInterceptor).addPathPatterns("/**");
         registry.addInterceptor(adminInterceptor).addPathPatterns("/admin/**");
+    }
+    @Bean   // IoC 처리됨
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }

@@ -27,10 +27,10 @@ public class UserRequest {
             }
         }
 
-        public User toEntity(String profileImageFilename) {
+        public User toEntity(String profileImageFilename, String encodePassword) {
             return User.builder()
                     .username(username)
-                    .password(password)
+                    .password(encodePassword)
                     .email(email)
                     .profileImage(profileImageFilename)
                     .build();
