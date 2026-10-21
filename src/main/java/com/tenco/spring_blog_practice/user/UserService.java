@@ -122,7 +122,7 @@ public class UserService {
                 .orElseGet(() -> joinKakaoUser(username, kakaoUserInfo));
 
         // 같은 이름의 일반 회원이 있다면 카카오 사용자로 로그인 시키지 않음
-        if(user.getProvider() != OAuthProvider.KAKAO){
+        if (user.getProvider() != OAuthProvider.KAKAO) {
             throw new Exception400("이미 사용중인 사용자명입니다.");
         }
 
@@ -138,6 +138,70 @@ public class UserService {
                 .email(username + "@kakao.com")
                 .profileImage(kakaoUserInfo.getProperties().getProfileImage())
                 .provider(OAuthProvider.KAKAO)
+                .build();
+        newUser.addRole(Role.USER);
+        return userJpaRepository.save(newUser);
+    }
+
+    // 구글 로그인 : 처음이면 자동 회원 가입, 기존 회원이면 로그인
+    @Transactional
+    public SessionUserDto googleLogin(UserResponse.GoogleUserInfo googleUserInfo) {
+        // 구글 사용자 고유 ID로 우리 서비스의 사용자명 만들기
+        String username = "google_" + googleUserInfo.getSub();
+
+        // 기존 회원인지 확인. 없으면 자동 회원 가입
+        User user = userJpaRepository.findByUsername(username)
+                .orElseGet(() -> joinGoogleUser(username, googleUserInfo));
+
+        // 같은 이름의 일반 회원이 있다면 구글 사용자로 로그인시키지 않음
+        if (user.getProvider() != OAuthProvider.GOOGLE) {
+            throw new Exception400("이미 사용 중인 사용자명입니다.");
+        }
+
+        return new SessionUserDto(user);
+    }
+
+    private User joinGoogleUser(String username, UserResponse.GoogleUserInfo googleUserInfo ) {
+        System.out.println("구글 프로필 이미지: " + googleUserInfo.getPicture());
+        User newUser = User.builder()
+                .username(username)
+                // 구글 로그인 사용자는 별도의 비밀번호 로그인을 사용하지 않음
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .email(googleUserInfo.getEmail())
+                .profileImage(googleUserInfo.getPicture())
+                .provider(OAuthProvider.GOOGLE)
+                .build();
+
+        newUser.addRole(Role.USER);
+        return userJpaRepository.save(newUser);
+    }
+
+    // 네이버 로그인 : 처음이면 자동 회원 가입, 기존 회원이면 로그인
+    @Transactional
+    public SessionUserDto naverLogin(UserResponse.NaverUserInfo naverUserInfo) {
+        // 네이버 사용자 고유 ID로 우리 서비스의 사용자명 만들기
+        String username = "naver_" + naverUserInfo.getResponse().getId();
+
+        // 기존 회원인지 확인. 없으면 자동 회원 가입
+        User user = userJpaRepository.findByUsername(username)
+                .orElseGet(() -> joinNaverUser(username, naverUserInfo));
+
+        // 같은 이름의 일반 회원이 있다면 구글 사용자로 로그인시키지 않음
+        if (user.getProvider() != OAuthProvider.NAVER) {
+            throw new Exception400("이미 사용 중인 사용자명입니다.");
+        }
+
+        return new SessionUserDto(user);
+    }
+
+    private User joinNaverUser(String username, UserResponse.NaverUserInfo naverUserInfo) {
+        User newUser = User.builder()
+                .username(username)
+                // 네이버 사용자는 비밀번호로 로그인하지 않으므로 아무도 알 수 없는 값을 넣음
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .email(username + "@naver.com")
+                .profileImage(naverUserInfo.getResponse().getProfileImage())
+                .provider(OAuthProvider.NAVER)
                 .build();
         newUser.addRole(Role.USER);
         return userJpaRepository.save(newUser);

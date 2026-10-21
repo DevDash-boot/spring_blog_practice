@@ -5,10 +5,12 @@ package com.tenco.spring_blog_practice._core.error;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -39,6 +41,12 @@ public class GlobalException {
     public String handle404(Exception404 e, Model model) {
         model.addAttribute("errorMessage", e.getMessage());
         return "err/404";
+    }
+
+    // 존재하지 않는 정적 리소스 요청(favicon, Chrome DevTools 등) → 로그 없이 404
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Void> handleNoResource(NoResourceFoundException e) {
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(Exception.class)

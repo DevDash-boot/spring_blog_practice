@@ -17,4 +17,11 @@ public class SessionUserDto {
         this.admin = user.isAdmin();    // 관리자이면 true
         this.roleDisplay = this.admin ? "ADMIN" : "USER";
     }
+
+    public String getDisplayUsername() {
+        if (username == null || username.length() <= 10) {
+            return username;
+        }
+        return username.substring(0, 10) + "...";
+    }
 }

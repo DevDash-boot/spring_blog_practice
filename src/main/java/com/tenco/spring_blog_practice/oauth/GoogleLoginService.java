@@ -1,0 +1,50 @@
+package com.tenco.spring_blog_practice.oauth;
+
+import com.tenco.spring_blog_practice._core.error.UnauthorizedException;
+import com.tenco.spring_blog_practice.user.SessionUserDto;
+import com.tenco.spring_blog_practice.user.UserResponse;
+import com.tenco.spring_blog_practice.user.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class GoogleLoginService {
+    private final GoogleApiClient googleApiClient;
+    private final UserService userService;
+
+    // 구글 로그인 화면 주소
+    public String getAuthorizeUrl() {
+        return googleApiClient.getAuthorizeUrl();
+    }
+
+    // 구글 로그인 : 인가 코드 -> 토큰 -> 사용자 정보 -> 가입 또는 로그인
+    public SessionUserDto login(String code) {
+        if (code == null) {
+            throw new UnauthorizedException("구글 로그인이 취소되었습니다.");
+        }
+        try {
+            // 1. 인가 코드로 액세스 토큰 발급(구글 서버 통신)
+            UserResponse.OauthToken oAuthToken = googleApiClient.requestAccessToken(code);
+
+            // 2. 액세스 토큰으로 사용자 정보 조회
+            UserResponse.GoogleUserInfo googleUserInfo = googleApiClient.requestProfile(oAuthToken.getAccessToken());
+
+            // 3. 자동 회원 가입 또는 로그인(DB 트랜잭션은 UserService가 담당)
+            return userService.googleLogin(googleUserInfo);
+
+        } catch (HttpClientErrorException e) {
+            // 구글 API 서버에서 4xx 응답을 한 경우 : 인가 코드 재사용, 키 오류 등
+            log.warn("구글 API 오류 : {}", e.getResponseBodyAsString());
+            throw new UnauthorizedException("구글 로그인에 실패했습니다. 다시 시도해주세요.");
+        } catch (ResourceAccessException e) {
+            // 구글 서버에 연결하지 못한 경우(네트워크 오류, 시간 초과 등)
+            log.warn("구글 서버에 연결 실패 : {}", e.getMessage());
+            throw new UnauthorizedException("구글 서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.");
+        }
+    }
+}

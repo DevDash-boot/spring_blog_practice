@@ -88,4 +88,50 @@ public class UserResponse {
             private String thumbnailImage;
         }
     }
+
+    // 구글은 사용자 정보를 반환하는 JSON 구조가 카카오와 다르다.
+    // 구글 문서에서 UserInfo 엔드포인트 확인해보면 sub, name, email, picture, given_name, family_name 형태이다.
+    @Data
+    public static class GoogleUserInfo {
+        private String sub; // 구글은 id가 아닌 sub 사용
+        private String name;
+        private String email;
+        private String picture;
+    }
+
+    // 네이버 액세스 토큰 응답 DTO
+    @Data
+    public static class NaverOauthToken {
+        @JsonProperty("access_token")
+        private String accessToken;
+        @JsonProperty("refresh_token")
+        private String refreshToken;
+        @JsonProperty("token_type")
+        private String tokenType;
+        @JsonProperty("expires_in")
+        private Long expiresIn;
+        @JsonProperty("error")
+        private String error;
+        @JsonProperty("error_description")
+        private String errorDescription;
+    }
+
+    // 네이버 사용자 정보 응답 DTO
+    @Data
+    public static class NaverUserInfo {
+        private String resultcode;
+        private String message;
+        private Response response;
+
+        @Data
+        public static class Response {
+            private String id;
+            private String nickname;
+            private String name;
+            private String email;
+
+            @JsonProperty("profile_image")
+            private String profileImage;
+        }
+    }
 }

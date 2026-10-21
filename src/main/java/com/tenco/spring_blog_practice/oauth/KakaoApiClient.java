@@ -1,5 +1,6 @@
-package com.tenco.spring_blog_practice.user;
+package com.tenco.spring_blog_practice.oauth;
 
+import com.tenco.spring_blog_practice.user.UserResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+// https://developers.kakao.com/docs/ko/kakaologin/rest-api?utm_source=chatgpt.com#req-user-info
 
 // 카카오 서버와 HTTP 통신만 담당하는 클래스
 @Slf4j
@@ -50,7 +53,7 @@ public class KakaoApiClient {
 
         // exchange(주소, method, HTTP 메세지, 응답 타입)
         ResponseEntity<UserResponse.OauthToken> response = restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
+                TOKEN_URL,
                 HttpMethod.POST,
                 tokenRequest,
                 UserResponse.OauthToken.class

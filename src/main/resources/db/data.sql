@@ -2,35 +2,59 @@
 -- =========================================
 -- 1. 사용자 20명
 -- =========================================
+
+-- 사용자 데이터
+-- 비밀번호: 1234 (BCrypt 해싱 값)
+
 INSERT INTO user_tb (username, password, email, created_at)
 VALUES
-    ('admin', '1234', 'admin@tenco.com', NOW()),
-    ('minsu', '1234', 'minsu@tenco.com', NOW()),
-    ('jihun', '1234', 'jihun@tenco.com', NOW()),
-    ('seoyeon', '1234', 'seoyeon@tenco.com', NOW()),
-    ('yujin', '1234', 'yujin@tenco.com', NOW()),
-    ('junho', '1234', 'junho@tenco.com', NOW()),
-    ('sumin', '1234', 'sumin@tenco.com', NOW()),
-    ('dohyun', '1234', 'dohyun@tenco.com', NOW()),
-    ('jiwoo', '1234', 'jiwoo@tenco.com', NOW()),
-    ('hyunwoo', '1234', 'hyunwoo@tenco.com', NOW()),
-    ('eunji', '1234', 'eunji@tenco.com', NOW()),
-    ('taeyang', '1234', 'taeyang@tenco.com', NOW()),
-    ('yuna', '1234', 'yuna@tenco.com', NOW()),
-    ('sangho', '1234', 'sangho@tenco.com', NOW()),
-    ('haneul', '1234', 'haneul@tenco.com', NOW()),
-    ('chaewon', '1234', 'chaewon@tenco.com', NOW()),
-    ('seungho', '1234', 'seungho@tenco.com', NOW()),
-    ('nari', '1234', 'nari@tenco.com', NOW()),
-    ('geonwoo', '1234', 'geonwoo@tenco.com', NOW()),
-    ('harin', '1234', 'harin@tenco.com', NOW());
+    ('admin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'admin@tenco.com', NOW()),
+    ('minsu', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'minsu@tenco.com', NOW()),
+    ('jihun', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'jihun@tenco.com', NOW()),
+    ('seoyeon', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'seoyeon@tenco.com', NOW()),
+    ('yujin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'yujin@tenco.com', NOW()),
+    ('junho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'junho@tenco.com', NOW()),
+    ('sumin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'sumin@tenco.com', NOW()),
+    ('dohyun', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'dohyun@tenco.com', NOW()),
+    ('jiwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'jiwoo@tenco.com', NOW()),
+    ('hyunwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'hyunwoo@tenco.com', NOW()),
+    ('eunji', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'eunji@tenco.com', NOW()),
+    ('taeyang', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'taeyang@tenco.com', NOW()),
+    ('yuna', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'yuna@tenco.com', NOW()),
+    ('sangho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'sangho@tenco.com', NOW()),
+    ('haneul', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'haneul@tenco.com', NOW()),
+    ('chaewon', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'chaewon@tenco.com', NOW()),
+    ('seungho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'seungho@tenco.com', NOW()),
+    ('nari', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'nari@tenco.com', NOW()),
+    ('geonwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'geonwoo@tenco.com', NOW()),
+    ('harin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'harin@tenco.com', NOW());
 
--- 1-1. 사용자 역할 (admin 은 관리자이면서 일반 사용자)
+
+
+-- 1-1. 사용자 역할
+-- admin은 관리자이면서 일반 사용자
+
 INSERT INTO user_role_tb (user_id, role) VALUES (1, 'ADMIN');
 INSERT INTO user_role_tb (user_id, role) VALUES (1, 'USER');
 INSERT INTO user_role_tb (user_id, role) VALUES (2, 'USER');
 INSERT INTO user_role_tb (user_id, role) VALUES (3, 'USER');
 INSERT INTO user_role_tb (user_id, role) VALUES (4, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (5, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (6, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (7, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (8, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (9, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (10, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (11, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (12, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (13, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (14, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (15, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (16, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (17, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (18, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (19, 'USER');
+INSERT INTO user_role_tb (user_id, role) VALUES (20, 'USER');
 
 -- =========================================
 -- 2. 게시글 40개

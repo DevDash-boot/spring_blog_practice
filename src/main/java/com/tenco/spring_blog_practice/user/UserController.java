@@ -1,7 +1,11 @@
 package com.tenco.spring_blog_practice.user;
 
 import com.tenco.spring_blog_practice._core.error.Exception400;
+import com.tenco.spring_blog_practice._core.error.UnauthorizedException;
 import com.tenco.spring_blog_practice._core.util.Define;
+import com.tenco.spring_blog_practice.oauth.GoogleLoginService;
+import com.tenco.spring_blog_practice.oauth.KakaoLoginService;
+import com.tenco.spring_blog_practice.oauth.NaverLoginService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Controller
 @Slf4j
@@ -18,6 +24,8 @@ public class UserController {
     private final UserService userService;
 
     private final KakaoLoginService kakaoLoginService;
+    private final GoogleLoginService googleLoginService;
+    private final NaverLoginService naverLoginService;
 
     @GetMapping("/kakao-login")
     public String kakaoLogin() {
@@ -28,6 +36,39 @@ public class UserController {
     @GetMapping("/oauth/kakao")
     public String kakaoCallback(@RequestParam(name= "code", required = false)String code, HttpSession session){
         SessionUserDto sessionUserDto = kakaoLoginService.login(code);
+        session.setAttribute(Define.SESSION_USER, sessionUserDto);
+        return "redirect:/";
+    }
+
+    @GetMapping("/google-login")
+    public String GoogleLogin(){
+        return "redirect:" + googleLoginService.getAuthorizeUrl();
+    }
+
+    @GetMapping("/oauth/google")
+    public String googleCallback(@RequestParam(name = "code", required = false)String code, HttpSession session){
+        SessionUserDto sessionUserDto = googleLoginService.login(code);
+        session.setAttribute(Define.SESSION_USER, sessionUserDto);
+        return "redirect:/";
+    }
+
+    @GetMapping("/naver-login")
+    public String naverLogin(HttpSession session) {
+        String state = UUID.randomUUID().toString();
+        session.setAttribute("naverState", state);
+
+        return "redirect:" + naverLoginService.getAuthorizeUrl(state);
+    }
+
+    @GetMapping("/oauth/naver")
+    public String naverCallback(@RequestParam(name = "code", required = false)String code, @RequestParam String state, HttpSession session){
+        // state 검증
+        String savedState = (String) session.getAttribute("naverState");
+        if (savedState == null || !savedState.equals(state)) {
+            throw new UnauthorizedException("네이버 로그인 state 검증에 실패했습니다.");
+        }
+        session.removeAttribute("naverState");
+        SessionUserDto sessionUserDto = naverLoginService.login(code, state);
         session.setAttribute(Define.SESSION_USER, sessionUserDto);
         return "redirect:/";
     }

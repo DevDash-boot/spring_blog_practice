@@ -1,6 +1,9 @@
-package com.tenco.spring_blog_practice.user;
+package com.tenco.spring_blog_practice.oauth;
 
 import com.tenco.spring_blog_practice._core.error.UnauthorizedException;
+import com.tenco.spring_blog_practice.user.SessionUserDto;
+import com.tenco.spring_blog_practice.user.UserResponse;
+import com.tenco.spring_blog_practice.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

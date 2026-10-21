@@ -9,7 +9,7 @@
             <p>내 회원 정보를 확인하세요.</p>
         </div>
 
-        <div class="auth-card w-100">
+        <div class="auth-card w-100 mypage-card">
             <div class="text-center mb-4">
                 {{#user.profileImage}}
                     <img src="{{user.profileImage}}"
@@ -29,12 +29,12 @@
 
             <div class="mb-3">
                 <label class="form-label fw-bold">아이디</label>
-                <p class="form-control-plaintext">{{user.username}}</p>
+                <p class="form-control-plaintext mypage-text">{{user.username}}</p>
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-bold">이메일</label>
-                <p class="form-control-plaintext">{{user.email}}</p>
+                <p class="form-control-plaintext mypage-text">{{user.email}}</p>
             </div>
 
             <div class="mb-4">
