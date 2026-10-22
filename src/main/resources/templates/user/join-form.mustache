@@ -7,32 +7,165 @@
         <h1>회원가입</h1>
         <p class="auth-description">개발자 커뮤니티에 참여해 보세요.</p>
 
-        <form action="/join" method="post" class="editor-form" enctype="multipart/form-data">
+        <form action="/join" method="post" class="editor-form" enctype="multipart/form-data" onsubmit="return checkVerify">
             <div class="mb-3">
                 <label for="username" class="form-label">아이디</label>
                 <input type="text" id="username" name="username" class="form-control"
                        placeholder="아이디를 입력하세요." required>
             </div>
+
             <div class="mb-3">
                 <label for="email" class="form-label">이메일</label>
                 <input type="email" id="email" name="email" class="form-control"
                        placeholder="example@email.com" required>
+
+                <button type="button" class="btn btn-outline-secondary mt-2"
+                        id="send-btn" onclick="sendCode()">
+                    인증 번호 전송
+                </button>
             </div>
+
+            {{! 인증번호 입력 영역 }}
+            <div class="mb-3" id="code-box" style="display: none;">
+                <label for="code" class="form-label">인증 번호</label>
+                <div class="input-group">
+                    <input type="text" id="code" class="form-control"
+                           placeholder="6자리 인증 번호 입력"
+                           maxlength="6" inputmode="numeric"
+                           autocomplete="one-time-code">
+                    <button type="button" class="btn btn-outline-secondary"
+                            id="verify-btn" onclick="verifyCode()">
+                        인증 번호 확인
+                    </button>
+                </div>
+                <div id="msg" class="form-text"></div>
+            </div>
+
             <div class="mb-4">
                 <label for="password" class="form-label">비밀번호</label>
                 <input type="password" id="password" name="password" class="form-control"
                        placeholder="비밀번호를 입력하세요." required>
             </div>
+
             <div class="mb-4">
+                <label for="profileImage" class="form-label">프로필 이미지</label>
                 <input type="file" id="profileImage" name="profileImage" class="form-control"
-                       accept="image/**">
-                <small>JPG, PNG, GIF, WEBP 파일만 올릴 수 있습니다.(선택 사항)</small>
+                       accept="image/jpeg,image/png,image/gif,image/webp">
+                <small>JPG, PNG, GIF, WEBP 파일만 올릴 수 있습니다. (선택 사항)</small>
             </div>
+
             <button type="submit" class="btn btn-dark w-100">회원가입</button>
         </form>
 
         <p class="auth-switch">이미 계정이 있으신가요? <a href="/login-form">로그인</a></p>
     </div>
 </section>
+
+<script>
+    // 화면 안내용 상태이며, 실제 인증 여부는 서버 세션에서 검사한다.
+    let isEmailVerified = false;
+
+    // 1. 인증 번호 전송
+    async function sendCode() {
+        const emailInput = document.querySelector("#email");
+        const email = emailInput.value.trim();
+
+        if (!emailInput.checkValidity()) {
+            emailInput.reportValidity();
+            return;
+        }
+
+        const sendBtn = document.querySelector("#send-btn");
+        const codeBox = document.querySelector("#code-box");
+        const msgBox = document.querySelector("#msg");
+
+        sendBtn.disabled = true;
+        sendBtn.innerText = "전송 중...";
+
+        try {
+            const response = await fetch("/api/email/send", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email: email})
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                isEmailVerified = false;
+                codeBox.style.display = "block";
+                document.querySelector("#code").value = "";
+                emailInput.readOnly = false;
+                document.querySelector("#verify-btn").disabled = false;
+                msgBox.innerText = result.message || "인증 번호를 이메일로 전송했습니다.";
+                msgBox.className = "form-text text-success";
+            } else {
+                msgBox.innerText = result.message || "인증 번호 전송에 실패했습니다.";
+                msgBox.className = "form-text text-danger";
+            }
+        } catch (e) {
+            alert("서버와 통신하지 못했습니다.");
+        } finally {
+            sendBtn.disabled = false;
+            sendBtn.innerText = "인증 번호 전송";
+        }
+    }
+
+    // 2. 인증 번호 확인
+    async function verifyCode() {
+        const email = document.querySelector("#email").value.trim();
+        const code = document.querySelector("#code").value.trim();
+        const msgBox = document.querySelector("#msg");
+
+        if (!code) {
+            alert("인증 번호를 입력해 주세요.");
+            return;
+        }
+
+        if (!/^\d{6}$/.test(code)) {
+            msgBox.innerText = "인증 번호 6자리를 입력해 주세요.";
+            msgBox.className = "form-text text-danger";
+            return;
+        }
+
+        const verifyBtn = document.querySelector("#verify-btn");
+        verifyBtn.disabled = true;
+
+        try {
+            const response = await fetch("/api/email/verify", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email: email, code: code})
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                isEmailVerified = true;
+                msgBox.innerText = result.message || "이메일 인증이 완료되었습니다.";
+                msgBox.className = "form-text text-success";
+                document.querySelector("#email").readOnly = true;
+                document.querySelector("#send-btn").disabled = true;
+            } else {
+                isEmailVerified = false;
+                msgBox.innerText = result.message || "인증 번호가 올바르지 않습니다.";
+                msgBox.className = "form-text text-danger";
+                verifyBtn.disabled = false;
+            }
+        } catch (e) {
+            alert("서버와 통신하지 못했습니다.");
+            verifyBtn.disabled = false;
+        }
+    }
+
+    // 3. 회원 가입 제출 직전 확인(false를 반환하면 제출이 취소됨)
+    function checkVerify(){
+        if(!isEmailVerified){
+            alert("이메일 인증을 먼저 완료해주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
 
 {{> layout/footer}}
