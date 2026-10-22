@@ -4,6 +4,7 @@ spring:
   mustache:
     servlet:
       expose-session-attributes: false
+      expose-request-attributes: true
   servlet:
     multipart:
       max-file-size: 10MB  # 파일 하나의 최대 크기

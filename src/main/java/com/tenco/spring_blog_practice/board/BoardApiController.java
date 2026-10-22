@@ -17,12 +17,11 @@ public class BoardApiController {
     private final BoardService boardService;
 
     @PostMapping("/api/boards/{id}/like")
-    public Map<String, Integer> like(@PathVariable Long id, HttpSession session) {
+    public BoardResponse.LikeDto like(@PathVariable Long id, HttpSession session) {
         SessionUserDto sessionUser = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
         if (sessionUser == null) {
             throw new Exception401("로그인이 필요합니다.");
         }
-        int likeCount = boardService.like(id, sessionUser);
-        return Map.of("likeCount", likeCount);
+        return boardService.like(id, sessionUser);
     }
 }

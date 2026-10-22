@@ -3,7 +3,7 @@ package com.tenco.spring_blog_practice.user;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_tb")
-@Data
+@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,18 +47,18 @@ public class User {
     private OAuthProvider provider;
 
     // 역할 추가(회원가입 시 기본 USER 부여, 관리자는 직접 지정)
-    public void addRole(Role role){
+    public void addRole(Role role) {
         // 이미 가진 역할이면 추가하지 않음(코드에서 1차 방어)
-        if(hasRole(role)){
+        if (hasRole(role)) {
             return;
         }
         this.roles.add(UserRole.builder().role(role).build());
     }
 
     // 해당 역할을 가지고 있는지 확인
-    public boolean hasRole(Role role){
-        for(UserRole u : this.roles){
-            if(u.getRole() == role){
+    public boolean hasRole(Role role) {
+        for (UserRole u : this.roles) {
+            if (u.getRole() == role) {
                 return true;    // 찾으면 바로 true
             }
         }
@@ -66,7 +66,7 @@ public class User {
     }
 
     // 로그인 한 사용자의 관리자 여부 확인 메서드
-    public boolean isAdmin(){
+    public boolean isAdmin() {
         return hasRole(Role.ADMIN); // 고정값 : 관리자 여부인지만 확인
     }
 
@@ -89,12 +89,12 @@ public class User {
     }
 
     // 프로필 경로
-    public String getProfilePath(){
-        if(this.profileImage == null){
+    public String getProfilePath() {
+        if (this.profileImage == null) {
             return null;
         }
         // 카카오 소셜 로그인 시 http로 시작하는 이미지가 들어온다.
-        if(this.profileImage.startsWith("http")){
+        if (this.profileImage.startsWith("http")) {
             return this.profileImage;
         }
         // 로컬 사용자의 이미지

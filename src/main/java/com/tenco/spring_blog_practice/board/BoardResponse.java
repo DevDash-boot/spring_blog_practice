@@ -16,6 +16,7 @@ public class BoardResponse {
         private String username;
         private String createdAt;
         private int likeCount;
+        private boolean liked;
 
         public DetailDto(Board board) {
             this.id = board.getId();
@@ -29,6 +30,13 @@ public class BoardResponse {
                 this.createdAt = board.getTime();
             }
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class LikeDto {
+        private boolean liked;
+        private int likeCount;
     }
 
     // 게시글 목록 + 페이지 정보 응답 DTO

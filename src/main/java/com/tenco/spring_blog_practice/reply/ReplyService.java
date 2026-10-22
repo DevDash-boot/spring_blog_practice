@@ -31,12 +31,11 @@ public class ReplyService {
     }
 
     public Reply findById(Long id) {
-        Reply reply = replyJpaRepository.findById(id)
+        return replyJpaRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("댓글 조회 실패");
-                    throw new Exception404("댓글을 찾을 수 없습니다.");
+                    log.warn("댓글 조회 실패 - ID : {}", id);
+                    return new Exception404("댓글을 찾을 수 없습니다.");
                 });
-        return reply;
     }
 
     // 댓글 등록

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import java.time.Duration;
 
 // 구글 https://developers.google.com/identity/openid-connect/reference?hl=ko&utm_source=chatgpt.com
 
@@ -24,7 +26,7 @@ public class GoogleApiClient {
     private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth";  // 인가 요청 주소
     private static final String TOKEN_URL = "https://oauth2.googleapis.com/token";  // 액세스 토큰 요청 주소
     private static final String PROFILE_URL = "https://openidconnect.googleapis.com/v1/userinfo";  // 프로필 이미지 요청 주소
-    private final RestTemplate restTemplate = new RestTemplate();   // 한 번 만들면 여러 요청에서 함께 사용해도 안전하게 설계되어 하나만 만들어 재사용한다.
+    private final RestTemplate restTemplate = createRestTemplate();   // 한 번 만들면 여러 요청에서 함께 사용해도 안전하게 설계되어 하나만 만들어 재사용한다.
 
     // 1. 구글 로그인 화면 주소 만들기(로그인 + 동의 화면)
     public String getAuthorizeUrl() {
@@ -77,5 +79,12 @@ public class GoogleApiClient {
                 UserResponse.GoogleUserInfo.class
         );
         return response.getBody();
+    }
+
+    private static RestTemplate createRestTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(Duration.ofSeconds(5));   // 서버 연결 대기 최대 5초
+        factory.setReadTimeout(Duration.ofSeconds(5));      // 응답 대기 최대 5초
+        return new RestTemplate(factory);
     }
 }

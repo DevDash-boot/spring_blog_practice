@@ -1,7 +1,7 @@
 package com.tenco.spring_blog_practice._core.intercepter;
 
+import com.tenco.spring_blog_practice._core.error.Exception401;
 import com.tenco.spring_blog_practice._core.error.Exception403;
-import com.tenco.spring_blog_practice._core.error.UnauthorizedException;
 import com.tenco.spring_blog_practice._core.util.Define;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 
         // 로그인 확인은 만들었던 LoginInterceptor가 먼저 처리(등록 순서가 변경되면 오류가 발생)
         if (sessionUserDto == null) {
-            throw new UnauthorizedException("로그인 먼저 해주세요.");
+            throw new Exception401("로그인 먼저 해주세요.");
         }
 
         // 관리자가 아니면 접근 거부

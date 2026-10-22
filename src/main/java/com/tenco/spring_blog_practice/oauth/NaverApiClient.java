@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import java.time.Duration;
 
 // https://developers.naver.com/docs/login/api/api.md
 
@@ -25,7 +27,7 @@ public class NaverApiClient {
     private static final String AUTHORIZE_URL = "https://nid.naver.com/oauth2.0/authorize";  // 인가 요청 주소
     private static final String TOKEN_URL = "https://nid.naver.com/oauth2.0/token";  // 액세스 토큰 요청 주소
     private static final String PROFILE_URL = "https://openapi.naver.com/v1/nid/me";  // 프로필 이미지 요청 주소
-    private final RestTemplate restTemplate = new RestTemplate();   // 한 번 만들면 여러 요청에서 함께 사용해도 안전하게 설계되어 하나만 만들어 재사용한다.
+    private final RestTemplate restTemplate = createRestTemplate();  // 한 번 만들면 여러 요청에서 함께 사용해도 안전하게 설계되어 하나만 만들어 재사용한다.
 
     // 1. 네이버 로그인 화면 주소 만들기(로그인 + 동의 화면)
     public String getAuthorizeUrl(String state){
@@ -76,4 +78,12 @@ public class NaverApiClient {
         );
         return response.getBody();
     }
+
+    private static RestTemplate createRestTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(Duration.ofSeconds(5));   // 서버 연결 대기 최대 5초
+        factory.setReadTimeout(Duration.ofSeconds(5));      // 응답 대기 최대 5초
+        return new RestTemplate(factory);
+    }
+
 }

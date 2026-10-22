@@ -12,7 +12,10 @@ public class ReplyRequest {
 
         public void validate() {
             if (content == null || content.trim().isEmpty()) {
-                throw new Exception400("내용 필수입니다.");
+                throw new Exception400("내용은 필수입니다.");
+            }
+            if (content.trim().length() > 255) {
+                throw new Exception400("댓글은 255자 이하로 입력해주세요.");
             }
         }
 
@@ -33,7 +36,10 @@ public class ReplyRequest {
 
         public void validate() {
             if (content == null || content.trim().isEmpty()) {
-                throw new Exception400("내용 필수입니다.");
+                throw new Exception400("내용은 필수입니다.");
+            }
+            if (content.trim().length() > 255) {
+                throw new Exception400("댓글은 255자 이하로 입력해주세요.");
             }
         }
     }

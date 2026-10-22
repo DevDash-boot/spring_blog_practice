@@ -3,8 +3,14 @@ package com.tenco.spring_blog_practice.user;
 import com.tenco.spring_blog_practice._core.error.Exception400;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 public class UserRequest {
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{4,20}$");
+
     @Data
     public static class joinDto {
         private String username;
@@ -13,19 +19,31 @@ public class UserRequest {
         private MultipartFile profileImage; // 프로필 이미지(선택 사항)
 
         public void validate() {
-            if (username == null || username.trim().isEmpty()) {
+            if (username == null || username.isEmpty()) {
                 throw new Exception400("사용자명은 필수입니다.");
+            }
+            if (!USERNAME_PATTERN.matcher(username).matches()) {
+                throw new Exception400("사용자명은 영문, 숫자, 밑줄(_) 4~20자로 입력해주세요.");
+            }
+            // 소셜 로그인 사용자명(kakao_123 등)을 미리 선점하는 것 방지
+            if (username.startsWith("kakao_") || username.startsWith("google_") || username.startsWith("naver_")) {
+                throw new Exception400("사용할 수 없는 사용자명입니다.");
             }
             if (password == null || password.trim().isEmpty()) {
                 throw new Exception400("비밀번호는 필수입니다.");
             }
-            if (email == null || email.trim().isEmpty()) {
-                throw new Exception400("이메은 필수입니다.");
-            }
             if (password.length() < 4) {
                 throw new Exception400("비밀번호는 4글자 이상입니다.");
             }
+            // BCrypt는 72바이트까지만 처리한다.
+            if (password.getBytes(StandardCharsets.UTF_8).length > 72) {
+                throw new Exception400("비밀번호가 너무 깁니다.");
+            }
+            if (email == null || !EMAIL_PATTERN.matcher(email.trim()).matches()) {
+                throw new Exception400("올바른 이메일 형식이 아닙니다.");
+            }
         }
+
 
         public User toEntity(String profileImageFilename, String encodePassword) {
             return User.builder()
@@ -87,9 +105,9 @@ public class UserRequest {
 
         public void validate() {
             if (email == null || email.trim().isEmpty()) {
-                throw new Exception400("이메일을 입력해주세요");
+                throw new Exception400("이메일을 입력해주세요.");
             }
-            if (!email.contains("@")) {
+            if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
                 throw new Exception400("올바른 이메일 형식이 아닙니다.");
             }
         }
@@ -99,6 +117,9 @@ public class UserRequest {
             validate();
             if (code == null || code.trim().isEmpty()) {
                 throw new Exception400("인증 번호를 입력해주세요.");
+            }
+            if (!code.matches("\\d{6}")) {
+                throw new Exception400("인증 번호 6자리를 입력해주세요.");
             }
         }
     }

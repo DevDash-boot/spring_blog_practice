@@ -55,6 +55,7 @@ public class UserApiController {
     // 메일 발생 실패 등 오류
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleEx500(RuntimeException e) {
+        log.error("이메일 API 처리 중 오류", e);       // 추가
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("message", "메일 발송 중 오류가 발생했습니다."));
     }

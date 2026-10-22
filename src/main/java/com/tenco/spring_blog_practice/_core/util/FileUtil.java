@@ -14,25 +14,25 @@ import java.util.UUID;
 
 @Slf4j
 public class FileUtil {
-    public static final String UPLOAD_DIR = Paths.get(System.getProperty("user.home"),"blog_uploads").toString();
+    public static final String UPLOAD_DIR = Paths.get(System.getProperty("user.home"), "blog_uploads").toString();
 
     // 허용하는 이미지 형식과 저장할 확장자 설정
     private static final Map<String, String> IMAGE_TYPES = Map.of(
-            "image/jpeg",".jpg",
-            "image/png",".png",
-            "image/gif",".gif",
-            "image/webp",".webp"
+            "image/jpeg", ".jpg",
+            "image/png", ".png",
+            "image/gif", ".gif",
+            "image/webp", ".webp"
     );
 
     // 이미지 저장 : 저장할 파일 이름을 반환(파일이 없으면 null)
-    public static String saveImage(MultipartFile file){
+    public static String saveImage(MultipartFile file) {
         // 파일 저장은 선택 사항으로 설정(프로필)
-        if(file == null || file.isEmpty()){
+        if (file == null || file.isEmpty()) {
             return null;
         }
 
         // 허용한 이미지 형식인지 확인
-        if(!isImageFile(file)){
+        if (!isImageFile(file)) {
             throw new Exception400("이미지 파일은 (JPG, PNG, GIF, WEBP)만 업로드 가능");
         }
 
@@ -53,8 +53,8 @@ public class FileUtil {
     }
 
     // 파일 삭제(파일 이름이 없거나 파일이 없으면 동작 안함)
-    public static void deleteFile(String filename){
-        if(filename == null || filename.isBlank()){
+    public static void deleteFile(String filename) {
+        if (filename == null || filename.isBlank() || filename.startsWith("http")) {
             return;
         }
         try {
@@ -66,8 +66,8 @@ public class FileUtil {
     }
 
     // 편의 메서드 : 허용한 이미지 형식인지 확인
-    public static boolean isImageFile(MultipartFile file){
-        if(file == null || file.getContentType() == null){
+    public static boolean isImageFile(MultipartFile file) {
+        if (file == null || file.getContentType() == null) {
             return false;   // 형식 정보가 없으면 허용하지 않음
         }
         return IMAGE_TYPES.containsKey(file.getContentType());

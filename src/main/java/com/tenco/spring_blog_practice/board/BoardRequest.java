@@ -15,7 +15,13 @@ public class BoardRequest {
                 throw new Exception400("제목은 필수입니다.");
             }
             if (content == null || content.trim().isEmpty()) {
-                throw new Exception400("내용 필수입니다.");
+                throw new Exception400("내용은 필수입니다.");
+            }
+            if (title.trim().length() > 100) {
+                throw new Exception400("제목은 100자 이하로 입력해주세요.");
+            }
+            if (content.length() > 10000) {   // MySQL TEXT는 65,535바이트(한글 약 2만 자)
+                throw new Exception400("내용은 10,000자 이하로 입력해주세요.");
             }
         }
 
@@ -34,7 +40,13 @@ public class BoardRequest {
                 throw new Exception400("제목은 필수입니다.");
             }
             if (content == null || content.trim().isEmpty()) {
-                throw new Exception400("내용 필수입니다.");
+                throw new Exception400("내용은 필수입니다.");
+            }
+            if (title.trim().length() > 100) {
+                throw new Exception400("제목은 100자 이하로 입력해주세요.");
+            }
+            if (content.length() > 10000) {   // MySQL TEXT는 65,535바이트(한글 약 2만 자)
+                throw new Exception400("내용은 10,000자 이하로 입력해주세요.");
             }
         }
     }

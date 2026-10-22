@@ -40,13 +40,13 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
-        BoardResponse.DetailDto detailDto = boardService.findById(id);
         SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
-        boolean isOwner = sessionUserDto != null && detailDto.getUserId().equals(sessionUserDto.getId());
+        Long sessionUserId = (sessionUserDto != null) ? sessionUserDto.getId() : null;
 
-        // 게시글별 댓글 조회
-        Long sessionUserId = sessionUserDto != null ? sessionUserDto.getId() : null;
+        BoardResponse.DetailDto detailDto = boardService.findById(id, sessionUserId);
+        boolean isOwner = sessionUserId != null && detailDto.getUserId().equals(sessionUserId);
         List<ReplyResponse> replyResponseList = replyService.findAllByBoardId(id, sessionUserId);
+
         model.addAttribute("board", detailDto);
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("replyList", replyResponseList);

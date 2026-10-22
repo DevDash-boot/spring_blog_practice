@@ -34,6 +34,12 @@ public class MailService {
 
     // 1. 인증 번호 발송
     public void sendVerificationCode(String email, HttpSession session) {
+        long now = System.currentTimeMillis();
+        Long lastSent = (Long) session.getAttribute(Define.EMAIL_LAST_SENT);
+        if (lastSent != null && now - lastSent < Define.RESEND_COOLDOWN_SECONDS * 1000L) {
+            throw new Exception400("인증 번호는 " + Define.RESEND_COOLDOWN_SECONDS + "초 후에 다시 요청할 수 있습니다.");
+        }
+
         // 1-1. 6자리 인증 번호 생성
         String code = MailUtil.generateCode();
         // 1-2. 메일 작성 (MimeMessage : HTML 본문을 만들 수 있고, 첨부 파일 등을 담을 수 있는 메일 형식)
@@ -50,31 +56,45 @@ public class MailService {
         }
         // 1-3. 인증 번호 발송
         javaMailSender.send(message);
+        session.setAttribute(Define.EMAIL_LAST_SENT, now);
 
         session.setAttribute(Define.EMAIL_CODE_PREFIX + email,
                 new EmailCode(code, LocalDateTime.now().plusMinutes(Define.CODE_EXPIRE_MINUTES)));
+        session.removeAttribute(Define.EMAIL_ATTEMPT_PREFIX + email);
         log.info("인증 번호 발송 완료 - 이메일 : {}", email);   // 인증 번호 자체는 로그에 남기지 않는다.
     }
 
     // 2. 인증 번호 확인 : 일치하면 true
     public boolean verifyCode(String email, String code, HttpSession session) {
         String key = Define.EMAIL_CODE_PREFIX + email;
+        String attemptKey = Define.EMAIL_ATTEMPT_PREFIX + email;
+
         EmailCode savedEmailCode = (EmailCode) session.getAttribute(key);
         if (savedEmailCode == null) {
             throw new Exception400("인증 번호를 먼저 요청해주세요.");
         }
         if (savedEmailCode.isExpired()) {
-            session.removeAttribute(key);   // 만료된 인증 번호 삭제
+            session.removeAttribute(key);
+            session.removeAttribute(attemptKey);
             throw new Exception400("인증 번호가 만료되었습니다. 다시 요청해 주세요.");
         }
-        if(!savedEmailCode.code().equals(code)){
+
+        // 시도 횟수 증가 후 초과하면 인증 번호 폐기
+        Integer prev = (Integer) session.getAttribute(attemptKey);
+        int attempts = (prev == null) ? 1 : prev + 1;
+        if (attempts > Define.MAX_VERIFY_ATTEMPTS) {
+            session.removeAttribute(key);
+            session.removeAttribute(attemptKey);
+            throw new Exception400("시도 횟수를 초과했습니다. 인증 번호를 다시 요청해 주세요.");
+        }
+
+        if (!savedEmailCode.code().equals(code)) {
+            session.setAttribute(attemptKey, attempts);
             throw new Exception400("인증 번호가 일치하지 않습니다.");
         }
 
-        // 성공 시 사용한 인증 번호는 삭제(한 번만 사용할 수 있게)
         session.removeAttribute(key);
-        // 인증을 완료한 다음 이메일을 세션에 기록해야한다.(회원가입 시 서버가 확인)
-        // 인증된 이메일이 아닌 경우 변조해서 던질 수 있다.
+        session.removeAttribute(attemptKey);
         session.setAttribute(Define.VERIFIED_EMAIL, email);
         return true;
     }

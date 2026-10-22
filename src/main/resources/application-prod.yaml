@@ -1,5 +1,6 @@
 server:
   port: 5000
+  forward-headers-strategy: framework
 
 logging:
   level:
@@ -17,9 +18,9 @@ spring:
     open-In-view: true
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         default_batch_fetch_size: 10
         format_sql: true
-    defer-datasource-initializaion: true
+    defer-datasource-initialization: true

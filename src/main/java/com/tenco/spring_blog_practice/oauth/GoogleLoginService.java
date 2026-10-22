@@ -1,6 +1,6 @@
 package com.tenco.spring_blog_practice.oauth;
 
-import com.tenco.spring_blog_practice._core.error.UnauthorizedException;
+import com.tenco.spring_blog_practice._core.error.Exception401;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
 import com.tenco.spring_blog_practice.user.UserResponse;
 import com.tenco.spring_blog_practice.user.UserService;
@@ -25,7 +25,7 @@ public class GoogleLoginService {
     // 구글 로그인 : 인가 코드 -> 토큰 -> 사용자 정보 -> 가입 또는 로그인
     public SessionUserDto login(String code) {
         if (code == null) {
-            throw new UnauthorizedException("구글 로그인이 취소되었습니다.");
+            throw new Exception401("구글 로그인이 취소되었습니다.");
         }
         try {
             // 1. 인가 코드로 액세스 토큰 발급(구글 서버 통신)
@@ -40,11 +40,11 @@ public class GoogleLoginService {
         } catch (HttpClientErrorException e) {
             // 구글 API 서버에서 4xx 응답을 한 경우 : 인가 코드 재사용, 키 오류 등
             log.warn("구글 API 오류 : {}", e.getResponseBodyAsString());
-            throw new UnauthorizedException("구글 로그인에 실패했습니다. 다시 시도해주세요.");
+            throw new Exception401("구글 로그인에 실패했습니다. 다시 시도해주세요.");
         } catch (ResourceAccessException e) {
             // 구글 서버에 연결하지 못한 경우(네트워크 오류, 시간 초과 등)
             log.warn("구글 서버에 연결 실패 : {}", e.getMessage());
-            throw new UnauthorizedException("구글 서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.");
+            throw new Exception401("구글 서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.");
         }
     }
 }

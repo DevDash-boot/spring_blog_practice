@@ -11,4 +11,6 @@ public interface BoardLikeJpaRepository extends JpaRepository<BoardLike, Long> {
 
     // 특정 게시글의 좋아요 전체 삭제
     void deleteByBoard_Id(Long boardId);
+
+    boolean existsByBoard_IdAndUser_Id(Long boardId, Long userId);
 }

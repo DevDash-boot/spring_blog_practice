@@ -37,14 +37,15 @@ public class BoardService {
         return savedBoard;
     }
 
-    // 게시글 상세 조회
-    public BoardResponse.DetailDto findById(Long id) {
+    // 게시글 상세 조회 (userId는 비로그인이면 null)
+    public BoardResponse.DetailDto findById(Long id, Long userId) {
         Board board = boardJpaRepository.findByIdJoinUser(id)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
         BoardResponse.DetailDto detailDto = new BoardResponse.DetailDto(board);
-        long likeCount = boardLikeJpaRepository.countByBoard_Id(id);
-        log.info("게시글 ID: {}, 좋아요 개수: {}", id, likeCount);
-        detailDto.setLikeCount(Math.toIntExact(likeCount));
+        detailDto.setLikeCount(Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(id)));
+        if (userId != null) {
+            detailDto.setLiked(boardLikeJpaRepository.existsByBoard_IdAndUser_Id(id, userId));
+        }
         return detailDto;
     }
 
@@ -107,23 +108,22 @@ public class BoardService {
     }
 
     @Transactional
-    public int like(Long boardId, SessionUserDto sessionUser) {
+    public BoardResponse.LikeDto like(Long boardId, SessionUserDto sessionUser) {
         Board board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-
         Long userId = sessionUser.getId();
-
         var existingLike = boardLikeJpaRepository.findByBoard_IdAndUser_Id(boardId, userId);
 
+        boolean liked;
         if (existingLike.isPresent()) {
-            // 이미 좋아요를 눌렀다면 취소
-            boardLikeJpaRepository.delete(existingLike.get());
+            boardLikeJpaRepository.delete(existingLike.get());   // 이미 눌렀다면 취소
+            liked = false;
         } else {
-            // 좋아요 기록 등록
             User user = userJpaRepository.getReferenceById(userId);
             boardLikeJpaRepository.save(new BoardLike(board, user));
+            liked = true;
         }
-
-        return Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(boardId));
+        int count = Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(boardId));
+        return new BoardResponse.LikeDto(liked, count);
     }
 }

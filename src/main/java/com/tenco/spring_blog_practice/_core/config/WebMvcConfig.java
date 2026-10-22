@@ -43,10 +43,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(ipBlockInterceptor).addPathPatterns("/**");
         registry.addInterceptor(sessionUserModleInterceptor).addPathPatterns("/**");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/user/**", "/board/**", "/reply/**", "/admin/**")
                 .excludePathPatterns("/board/list", "/board/{id:\\d+}");
-        registry.addInterceptor(ipBlockInterceptor).addPathPatterns("/**");
         registry.addInterceptor(adminInterceptor).addPathPatterns("/admin/**");
     }
     @Bean   // IoC 처리됨

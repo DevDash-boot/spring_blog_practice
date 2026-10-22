@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 public class MyDataUtil {
     public static String timestampFormat(Timestamp timestamp) {
+        if (timestamp == null) return "";
         Date currentDate = new Date(timestamp.getTime());
         return DateFormatUtils.format(currentDate, "yyyy-MM-dd HH:mm");
     }

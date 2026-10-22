@@ -1,5 +1,5 @@
 server:
-  port:8080
+  port: 8080
 
 logging:
   level:
@@ -21,7 +21,7 @@ spring:
     open-In-view: true
     hibernate:
       ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         default_batch_fetch_size: 10

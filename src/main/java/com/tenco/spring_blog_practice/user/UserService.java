@@ -2,15 +2,13 @@ package com.tenco.spring_blog_practice.user;
 
 import com.tenco.spring_blog_practice._core.error.Exception400;
 import com.tenco.spring_blog_practice._core.error.Exception404;
-import com.tenco.spring_blog_practice._core.util.Define;
 import com.tenco.spring_blog_practice._core.util.FileUtil;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.dao.DataIntegrityViolationException;
 import java.util.UUID;
 
 @Slf4j
@@ -26,7 +24,7 @@ public class UserService {
         log.info("회원가입 서비스 처리 시작 - 사용자명 : {}", joinDto.getUsername());
         // 이메일 인증 여부 확인
         // 인증하지 않았거나 인증한 이메일과 가입 폼의 이메일이 다르면 거부
-        if(verifiedEmail == null || !verifiedEmail.equals(joinDto.getEmail())){
+        if (verifiedEmail == null || !verifiedEmail.equals(joinDto.getEmail())) {
             throw new Exception400("이메일 인증을 먼저 완료해주세요.");
         }
         // 중복 체크 : 이미 있으면 null이 아님
@@ -39,14 +37,17 @@ public class UserService {
         checkEmailAvailable(joinDto.getEmail());
         // 프로필 이미지 저장(새롭게 생긴 파일 이름이 리턴)
         String profileImage = FileUtil.saveImage(joinDto.getProfileImage());
-        // 비밀번호 해싱 처리
-        String encodePassword = passwordEncoder.encode(joinDto.getPassword());
-        // 프로필 파일 이름과 회원 정보 저장
-        User user = joinDto.toEntity(profileImage, encodePassword);
-        user.addRole(Role.USER);    // Role 기본값 할당
-        User savedUser = userJpaRepository.save(user);
-        log.info("회원가입 서비스 처리 완료 - 사용자명 : {}, ID : {}", joinDto.getUsername(), savedUser.getId());
-        return new UserResponse.JoinDto(savedUser);
+        try {
+            String encodePassword = passwordEncoder.encode(joinDto.getPassword());
+            User user = joinDto.toEntity(profileImage, encodePassword);
+            user.addRole(Role.USER);
+            User savedUser = userJpaRepository.saveAndFlush(user);   // 제약 위반을 여기서 바로 확인
+            log.info("회원가입 서비스 처리 완료 - 사용자명 : {}, ID : {}", joinDto.getUsername(), savedUser.getId());
+            return new UserResponse.JoinDto(savedUser);
+        } catch (DataIntegrityViolationException e) {
+            FileUtil.deleteFile(profileImage);                        // 업로드된 파일 정리
+            throw new Exception400("이미 사용 중인 사용자명 또는 이메일입니다.");
+        }
     }
 
     public SessionUserDto login(UserRequest.loginDto loginDto) {
@@ -60,7 +61,7 @@ public class UserService {
                 });
         // 비밀번호 비교 : matches(입력한 평문, DB에 저장된 해시)
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            log.warn("로그인 실패 - 비밀번호 : {}, 원인 : 비밀번호 불일치", loginDto.getPassword());
+            log.warn("로그인 실패 - 비밀번호 : {}, 원인 : 비밀번호 불일치", loginDto.getUsername());
             throw new Exception400("사용자명 또는 비밀번호가 올바르지 않습니다.");
         }
         log.info("로그인 성공 : {}", loginDto.getUsername());
@@ -130,12 +131,16 @@ public class UserService {
     }
 
     private User joinKakaoUser(String username, UserResponse.KakaoUserInfo kakaoUserInfo) {
+        // 프로필 동의를 안 하면 properties 자체가 null일 수 있다.
+        String profileImage = (kakaoUserInfo.getProperties() == null)
+                ? null
+                : kakaoUserInfo.getProperties().getProfileImage();
+
         User newUser = User.builder()
                 .username(username)
-                // 카카오 사용자는 비밀번호로 로그인하지 않으므로 아무도 알 수 없는 값을 넣음
                 .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .email(username + "@kakao.com")
-                .profileImage(kakaoUserInfo.getProperties().getProfileImage())
+                .profileImage(profileImage)
                 .provider(OAuthProvider.KAKAO)
                 .build();
         newUser.addRole(Role.USER);
@@ -160,17 +165,20 @@ public class UserService {
         return new SessionUserDto(user);
     }
 
-    private User joinGoogleUser(String username, UserResponse.GoogleUserInfo googleUserInfo ) {
-        System.out.println("구글 프로필 이미지: " + googleUserInfo.getPicture());
+    private User joinGoogleUser(String username, UserResponse.GoogleUserInfo googleUserInfo) {
+        // 같은 이메일로 이미 가입한 회원이 있으면 unique 제약에 걸리기 전에 안내
+        userJpaRepository.findByEmail(googleUserInfo.getEmail())
+                .ifPresent(u -> {
+                    throw new Exception400("이미 해당 이메일로 가입된 계정이 있습니다. 기존 방법으로 로그인해주세요.");
+                });
+
         User newUser = User.builder()
                 .username(username)
-                // 구글 로그인 사용자는 별도의 비밀번호 로그인을 사용하지 않음
                 .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .email(googleUserInfo.getEmail())
                 .profileImage(googleUserInfo.getPicture())
                 .provider(OAuthProvider.GOOGLE)
                 .build();
-
         newUser.addRole(Role.USER);
         return userJpaRepository.save(newUser);
     }

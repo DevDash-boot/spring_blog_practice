@@ -15,7 +15,7 @@ spring:
 
   h2:
     console:
-      enable: true
+      enabled: true
 
   jpa:
     open-In-view: true
@@ -26,10 +26,10 @@ spring:
       hibernate:
         default_batch_fetch_size: 10
         format_sql: true
-    defer-datasource-initializaion: true
+    defer-datasource-initialization: true
 
   sql:
     init:
       mode: always
-      data-location:
+      data-locations:
         - classpath:db/data.sql
