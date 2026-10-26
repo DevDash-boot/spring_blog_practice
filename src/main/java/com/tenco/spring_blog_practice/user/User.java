@@ -3,10 +3,7 @@ package com.tenco.spring_blog_practice.user;
 import com.tenco.spring_blog_practice._core.error.Exception400;
 import com.tenco.spring_blog_practice._core.error.NotEnoughPointException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -41,6 +38,11 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", nullable = false)
     private List<UserRole> roles = new ArrayList<>();
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    @Setter
+    private boolean certification = false;
 
     // 가입 경로(DB에는 LOCAL, KAKAO 문자열로 저장)
     @Enumerated(EnumType.STRING)

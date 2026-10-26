@@ -221,4 +221,18 @@ public class UserService {
                     throw new Exception400("이미 등록된 이메일입니다.");
                 });
     }
+    @Transactional
+    public void certifyPhone(Long userId) {
+        User user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new Exception400("사용자를 찾을 수 없습니다."));
+        user.setCertification(true);
+    }
+
+    @Transactional
+    public int chargePoint(Long userId, Integer amount) {
+        User user = findById(userId);
+        user.chargePoint(amount);   // 더티 체킹으로 UPDATE됨
+        log.info("포인트 충전 완료. 사용자 ID : {}, 충전 포인트 : {}, 보유 포인트 : {}", userId, amount, user.getPoint());
+        return user.getPoint();
+    }
 }
