@@ -1,5 +1,7 @@
 package com.tenco.spring_blog_practice.user;
 
+import com.tenco.spring_blog_practice._core.error.Exception400;
+import com.tenco.spring_blog_practice._core.error.NotEnoughPointException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +47,28 @@ public class User {
     @Column(nullable = false)
     @ColumnDefault("'LOCAL'")   // 문자열이므로 안에 작은 따옴표 필수
     private OAuthProvider provider;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int point; // Integer가 아니기 때문에 null값 세팅이 필요 없다. 또 builder에 안 넣어도 된다.
+
+    // 포인트 관련 편의 메서드 추가
+    public void chargePoint(int amount) {
+        if (amount <= 0) {
+            throw new Exception400("충전할 포인트는 0보다 커야합니다.");
+        }
+        this.point += amount;
+    }
+
+    public void deductPoint(int amount) {
+        if (amount <= 0) {
+            throw new Exception400("차감할 포인트는 0보다 커야 한다.");
+        }
+        if (this.point < amount) {
+            throw new NotEnoughPointException("마이 페이지에서 충전 후 다시 시도해주세요.");
+        }
+        this.point -= amount;
+    }
 
     // 역할 추가(회원가입 시 기본 USER 부여, 관리자는 직접 지정)
     public void addRole(Role role) {

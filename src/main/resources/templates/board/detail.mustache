@@ -18,6 +18,35 @@
 
         <div class="article-content">{{board.content}}</div>
 
+        <div class="article-content">
+            {{#board.canRead}}
+                {{board.content}}
+            {{/board.canRead}}
+
+            {{^board.canRead}}
+                <div class="text-center p-4">
+                    <p>유료 게시글입니다. 구매 후 내용을 볼 수 있습니다.</p>
+                    <p>금액은 500P입니다.</p>
+
+                    {{#sessionUser}}
+                        <form action="/board/{{board.id}}/purchase"
+                              method="POST"
+                              onsubmit="return confirm('500포인트로 이 게시글을 구매하시겠습니까?')">
+                            <button type="submit" class="btn btn-primary">
+                                구매하기 500P
+                            </button>
+                        </form>
+                    {{/sessionUser}}
+
+                    {{^sessionUser}}
+                        <a href="/login" class="btn btn-outline-primary">
+                            로그인 후 구매
+                        </a>
+                    {{/sessionUser}}
+                </div>
+            {{/board.canRead}}
+        </div>
+
         <div class="article-actions">
             <div class="like-section">
                 <button type="button" id="likeButton" class="btn btn-outline-danger">

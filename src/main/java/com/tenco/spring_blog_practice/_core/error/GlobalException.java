@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -70,5 +71,24 @@ public class GlobalException {
         model.addAttribute("errorMessage", "시스템 오류 발생. 관리자에게 문의해주세요.");
 
         return "err/500";
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    @ExceptionHandler(NotEnoughPointException.class)
+    public String exNot(NotEnoughPointException e, HttpServletRequest request, Model model) {
+        log.warn("=== 포인트 부족 에러 발생 ===");
+        log.warn("요청 URL : {} ", request.getRequestURL());
+        log.warn("권한 오류 : {} ", e.getMessage());
+        log.warn("예외 클래스 : {} ", e.getClass().getSimpleName());
+
+        String msg = e.getMessage().replace("'", "\\");    // 따옴표 깨짐 방지
+
+        return """
+                <script>
+                    alert('%s');
+                    location.href = '/user/detail';
+                </script>
+                """.formatted(msg);
     }
 }

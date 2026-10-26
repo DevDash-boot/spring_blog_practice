@@ -22,6 +22,11 @@
             <textarea id="content" name="content" class="form-control"
                       rows="12" required>{{board.content}}</textarea>
         </div>
+        {{! 체크하면 premium = true. 체크하지 않으면 아무 값도 보내지 않음}}
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-inpit" id="premium" placeholder="제목" name="premium" value="true">
+            <label for="premium" class="form-check-label">유료 게시글로 등록(다른 사용자는 500 포인트로 구매 후 열람됨</label>
+        </div>
         <div class="form-actions">
             <a href="/board/{{board.id}}" class="btn btn-outline-dark">취소</a>
             <button type="submit" class="btn btn-dark">수정 완료</button>

@@ -9,6 +9,7 @@ public class BoardRequest {
     public static class saveDto {
         private String title;
         private String content;
+        private boolean premium; // 유료 게시글 여부(체크 안하면 false)
 
         public void validate() {
             if (title == null || title.trim().isEmpty()) {
@@ -26,7 +27,12 @@ public class BoardRequest {
         }
 
         public Board toEntity(User user) {
-            return Board.builder().title(title).content(content).user(user).build();
+            return Board.builder()
+                    .title(title)
+                    .content(content)
+                    .premium(this.premium)
+                    .user(user)
+                    .build();
         }
     }
 
@@ -34,6 +40,7 @@ public class BoardRequest {
     public static class updateDto {
         private String title;
         private String content;
+        private boolean premium; // 유료 게시글 여부(체크 안하면 false)
 
         public void validate() {
             if (title == null || title.trim().isEmpty()) {

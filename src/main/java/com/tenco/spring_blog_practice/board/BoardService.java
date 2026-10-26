@@ -2,6 +2,7 @@ package com.tenco.spring_blog_practice.board;
 
 import com.tenco.spring_blog_practice._core.error.Exception403;
 import com.tenco.spring_blog_practice._core.error.Exception404;
+import com.tenco.spring_blog_practice.purchase.PurchaseJpaRepository;
 import com.tenco.spring_blog_practice.reply.ReplyJpaRepository;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
 import com.tenco.spring_blog_practice.user.User;
@@ -26,6 +27,7 @@ public class BoardService {
     private final UserJpaRepository userJpaRepository;
     private final BoardLikeJpaRepository boardLikeJpaRepository;
     private final ReplyJpaRepository replyJpaRepository;
+    private final PurchaseJpaRepository purchaseJpaRepository;
 
     // 게시글 저장
     @Transactional
@@ -39,14 +41,16 @@ public class BoardService {
 
     // 게시글 상세 조회 (userId는 비로그인이면 null)
     public BoardResponse.DetailDto findById(Long id, Long userId) {
+        log.info("게시글 상세 조회 서비스 - ID : {}", id);
+        // boardJpaRepository.findById(id) 이 메서드 대신 JOIN FETCH를 사용함
         Board board = boardJpaRepository.findByIdJoinUser(id)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-        BoardResponse.DetailDto detailDto = new BoardResponse.DetailDto(board);
-        detailDto.setLikeCount(Math.toIntExact(boardLikeJpaRepository.countByBoard_Id(id)));
-        if (userId != null) {
-            detailDto.setLiked(boardLikeJpaRepository.existsByBoard_IdAndUser_Id(id, userId));
-        }
-        return detailDto;
+        // 로그인 하지 않았으면 작성자도 구매자도 아님
+        boolean owner = userId != null && board.isOwner(userId);
+        // 로그인 한 상태에서 구매 이력 테이블에 존재하는지
+        boolean purchased = userId != null && purchaseJpaRepository.existsByUserIdAndBoardId(userId, id);
+
+        return new BoardResponse.DetailDto(board, owner, purchased);
     }
 
     // 게시글 목록 조회

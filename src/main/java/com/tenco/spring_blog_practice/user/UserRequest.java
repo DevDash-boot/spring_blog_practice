@@ -123,4 +123,18 @@ public class UserRequest {
             }
         }
     }
+    // 포인트 추천 요청 DTO(테스트용 충전 API, 실제 서비스는 결제 연동으로 대체)
+    @Data
+    public static class PointChargeDto {
+        private Integer amount; // 충전할 포인트
+
+        public void validate() {
+            if (amount == null || amount <= 0) {
+                throw new Exception400("충전할 포인트는 0보다 커야합니다.");
+            }
+            if (amount > 100000) {
+                throw new Exception400("한 번에 10만 포인트까지만 충전할 수 있습니다.");
+            }
+        }
+    }
 }

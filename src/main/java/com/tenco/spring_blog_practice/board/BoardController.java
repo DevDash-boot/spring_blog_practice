@@ -1,6 +1,7 @@
 package com.tenco.spring_blog_practice.board;
 
 import com.tenco.spring_blog_practice._core.util.Define;
+import com.tenco.spring_blog_practice.purchase.PurchaseService;
 import com.tenco.spring_blog_practice.reply.ReplyResponse;
 import com.tenco.spring_blog_practice.reply.ReplyService;
 import com.tenco.spring_blog_practice.user.SessionUserDto;
@@ -24,6 +25,7 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
     private final ReplyService replyService;
+    private final PurchaseService purchaseService;
 
     @GetMapping({"/", "/board/list"})
     public String list(@RequestParam(name = "page", defaultValue = "1") int page,
@@ -87,6 +89,14 @@ public class BoardController {
         SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
         boardService.deleteById(id, sessionUserDto);
         return "redirect:/";
+    }
+
+    // 유료 게시글 구매 요청 URL
+    @PostMapping("/board/{id}/purchase")
+    public String purchase(@PathVariable(name = "id")Long id, HttpSession session){
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        purchaseService.purchase(id, sessionUserDto.getId());
+        return "redirect:/board/" + id;
     }
 }
 
