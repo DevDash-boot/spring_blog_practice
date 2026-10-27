@@ -91,7 +91,7 @@ public class UserService {
         return new SessionUserDto(user);    // 세션 동기화용 DTO 변환
     }
 
-    private User findById(Long id) {
+    public User findById(Long id) {
         log.info("사용자 정보 조회 - ID : {}", id);
         return userJpaRepository.findById(id)
                 .orElseThrow(() -> new Exception404("사용자를 찾을 수 없습니다."));

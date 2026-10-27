@@ -146,4 +146,16 @@ public class UserController {
         userService.deleteProfileImage(sessionUserDto.getId());
         return "redirect:/user/detail";
     }
+
+    // GET http://localhost:8080/user/point/charge (포인트 충전 화면)
+    @GetMapping("/user/point/charge")
+    public String chargePointForm(Model model, HttpSession session) {
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        if (sessionUserDto == null) {
+            return "redirect:/login";
+        }
+        User user = userService.findById(sessionUserDto.getId());
+        model.addAttribute("user", user);
+        return "user/charge-point";
+    }
 }

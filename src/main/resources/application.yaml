@@ -52,3 +52,9 @@ solapi:
   api-key: ${SOLAPI_API_KEY}
   api-secret: ${SOLAPI_API_SECRET}
   sender: ${SOLAPI_SENDER}
+# 포트원 V2 (결제 설정)
+# ":" 뒤가 비어 있으면 .env 값이 없어도 서버는 시작됨(결제는 실패)
+portone:
+  store-id: ${PORTONE_STORE_ID:}
+  channel-key: ${PORTONE_CHANNEL_KEY:}
+  api-secret: ${PROTONE_API_SECRET:}

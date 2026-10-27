@@ -1,33 +1,37 @@
-
 -- =========================================
 -- 1. 사용자 20명
 -- =========================================
 
 -- 사용자 데이터
 -- 비밀번호: 1234 (BCrypt 해싱 값)
+-- point : 보유 포인트 (유료 게시글 열람 가격 = 500P)
+--   admin(10000P), minsu(5000P) : 포인트 보유 (유료 게시글도 작성)
+--   포인트 충분(500P 이상) : jihun, seoyeon, yujin, sumin, jiwoo, taeyang, sangho, chaewon, nari, harin
+--   포인트 부족(500P 미만) : junho(300P)
+--   포인트 없음(0P)        : dohyun, hyunwoo, eunji, yuna, haneul, seungho, geonwoo
 
-INSERT INTO user_tb (username, password, email, created_at)
+INSERT INTO user_tb (username, password, email, point, created_at)
 VALUES
-    ('admin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'admin@tenco.com', NOW()),
-    ('minsu', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'minsu@tenco.com', NOW()),
-    ('jihun', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'jihun@tenco.com', NOW()),
-    ('seoyeon', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'seoyeon@tenco.com', NOW()),
-    ('yujin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'yujin@tenco.com', NOW()),
-    ('junho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'junho@tenco.com', NOW()),
-    ('sumin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'sumin@tenco.com', NOW()),
-    ('dohyun', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'dohyun@tenco.com', NOW()),
-    ('jiwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'jiwoo@tenco.com', NOW()),
-    ('hyunwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'hyunwoo@tenco.com', NOW()),
-    ('eunji', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'eunji@tenco.com', NOW()),
-    ('taeyang', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'taeyang@tenco.com', NOW()),
-    ('yuna', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'yuna@tenco.com', NOW()),
-    ('sangho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'sangho@tenco.com', NOW()),
-    ('haneul', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'haneul@tenco.com', NOW()),
-    ('chaewon', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'chaewon@tenco.com', NOW()),
-    ('seungho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'seungho@tenco.com', NOW()),
-    ('nari', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'nari@tenco.com', NOW()),
-    ('geonwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'geonwoo@tenco.com', NOW()),
-    ('harin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'harin@tenco.com', NOW());
+    ('admin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'admin@tenco.com', 10000, NOW()),
+    ('minsu', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'minsu@tenco.com', 5000, NOW()),
+    ('jihun', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'jihun@tenco.com', 3000, NOW()),
+    ('seoyeon', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'seoyeon@tenco.com', 1500, NOW()),
+    ('yujin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'yujin@tenco.com', 500, NOW()),
+    ('junho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'junho@tenco.com', 300, NOW()),
+    ('sumin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'sumin@tenco.com', 2000, NOW()),
+    ('dohyun', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'dohyun@tenco.com', 0, NOW()),
+    ('jiwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'jiwoo@tenco.com', 800, NOW()),
+    ('hyunwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'hyunwoo@tenco.com', 0, NOW()),
+    ('eunji', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'eunji@tenco.com', 0, NOW()),
+    ('taeyang', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'taeyang@tenco.com', 1000, NOW()),
+    ('yuna', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'yuna@tenco.com', 0, NOW()),
+    ('sangho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'sangho@tenco.com', 4000, NOW()),
+    ('haneul', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'haneul@tenco.com', 0, NOW()),
+    ('chaewon', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'chaewon@tenco.com', 600, NOW()),
+    ('seungho', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'seungho@tenco.com', 0, NOW()),
+    ('nari', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'nari@tenco.com', 2500, NOW()),
+    ('geonwoo', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'geonwoo@tenco.com', 0, NOW()),
+    ('harin', '$2a$10$jiByiZruBRyjQuhMgF6kY.Hg2NTqKV2YqmbiGoUYn/HthKtJrkoca', 'harin@tenco.com', 1200, NOW());
 
 
 
@@ -57,51 +61,53 @@ INSERT INTO user_role_tb (user_id, role) VALUES (19, 'USER');
 INSERT INTO user_role_tb (user_id, role) VALUES (20, 'USER');
 
 -- =========================================
--- 2. 게시글 40개
+-- 2. 게시글 40개 (무료 22개 / 유료 18개)
 -- user_id는 위 사용자 등록 순서 기준
+-- premium : TRUE = 유료 게시글(500P), FALSE = 무료 게시글
+--   admin(1) : 무료 1개 + 유료 1개 / minsu(2) : 무료 1개 + 유료 2개
 -- =========================================
-INSERT INTO board_tb (title, content, user_id, created_at)
+INSERT INTO board_tb (title, content, premium, user_id, created_at)
 VALUES
-    ('블로그 개설을 환영합니다', '새 블로그가 문을 열었습니다. 많은 참여 부탁드립니다.', 1, NOW()),
-    ('이용 수칙 안내', '서로 존중하는 소통 문화를 함께 만들어 가요.', 1, NOW()),
-    ('스프링 부트 학습 후기', 'JPA를 배우니 SQL을 직접 쓰는 일이 확 줄었습니다.', 2, NOW()),
-    ('연관관계 정리 노트', '@ManyToOne과 외래키의 관계를 정리해 봤습니다.', 2, NOW()),
-    ('코딩 테스트 문제 추천', '알고리즘 공부에 좋은 문제들을 모아 봤습니다.', 2, NOW()),
-    ('프론트엔드 프레임워크 비교', '리액트와 뷰의 장단점을 비교해 봤습니다.', 3, NOW()),
-    ('신입 개발자 취업 팁', '포트폴리오에서 가장 중요했던 점을 공유합니다.', 3, NOW()),
-    ('첫 번째 게시글입니다', '블로그에 처음 글을 올려 봅니다. 자주 소통해요.', 4, NOW()),
-    ('Java 컬렉션 정리', 'List, Set, Map의 특징과 차이점을 정리했습니다.', 5, NOW()),
-    ('객체지향 프로그래밍이란', '캡슐화, 상속, 다형성의 개념을 정리해 봤습니다.', 6, NOW()),
-    ('REST API 설계 원칙', '일관성 있는 API URL을 설계하는 방법을 알아봅니다.', 7, NOW()),
-    ('Git 브랜치 사용법', '브랜치를 이용해 기능별로 작업을 분리해 봤습니다.', 8, NOW()),
-    ('MySQL 인덱스 기초', '인덱스를 사용하면 조회 성능을 개선할 수 있습니다.', 9, NOW()),
-    ('트랜잭션 이해하기', '트랜잭션의 원자성과 일관성에 대해 공부했습니다.', 10, NOW()),
-    ('HTTP 요청과 응답', '클라이언트와 서버가 데이터를 주고받는 과정을 정리했습니다.', 11, NOW()),
-    ('CSS Flexbox 정리', 'Flexbox로 요소를 정렬하는 방법을 소개합니다.', 12, NOW()),
-    ('JavaScript 비동기 처리', 'Promise와 async/await의 차이를 정리했습니다.', 13, NOW()),
-    ('JPA 지연 로딩 이해', '지연 로딩과 즉시 로딩의 차이를 알아봅니다.', 14, NOW()),
-    ('DTO를 사용하는 이유', '계층 간 데이터 전달에 DTO를 사용하는 이유입니다.', 15, NOW()),
-    ('Spring 인터셉터 활용', '요청 처리 전후에 공통 기능을 실행해 봤습니다.', 16, NOW()),
-    ('예외 처리 방법 정리', '예외 상황을 일관되게 처리하는 방법을 공유합니다.', 17, NOW()),
-    ('페이징 처리 구현하기', '게시글을 페이지 단위로 나누어 조회하도록 구현했습니다.', 18, NOW()),
-    ('게시글 검색 기능 만들기', '제목과 내용에 포함된 키워드로 게시글을 검색합니다.', 19, NOW()),
-    ('Mustache 템플릿 사용법', '서버에서 전달한 데이터를 화면에 출력해 봤습니다.', 20, NOW()),
-    ('로그를 활용한 디버깅', '로그를 활용해 오류가 발생한 지점을 찾아봅니다.', 5, NOW()),
-    ('서비스와 레포지토리 역할', '서비스 계층과 레포지토리 계층의 책임을 정리했습니다.', 6, NOW()),
-    ('데이터베이스 정규화', '중복 데이터를 줄이기 위한 정규화 개념을 알아봅니다.', 7, NOW()),
-    ('외래키와 참조 무결성', '테이블 사이의 관계를 외래키로 관리해 봤습니다.', 8, NOW()),
-    ('회원가입 기능 구현', '회원 정보를 입력받아 데이터베이스에 저장합니다.', 9, NOW()),
-    ('로그인과 세션 관리', '세션을 이용해 로그인 상태를 유지해 봤습니다.', 10, NOW()),
-    ('게시글 수정과 삭제', '작성자 본인만 게시글을 수정하고 삭제하도록 구현했습니다.', 11, NOW()),
-    ('댓글 기능 구현하기', '게시글에 댓글을 작성하고 삭제할 수 있도록 만들었습니다.', 12, NOW()),
-    ('좋아요 기능 구현하기', '사용자별 좋아요 상태를 데이터베이스에 저장합니다.', 13, NOW()),
-    ('테스트 코드 작성법', 'Given-When-Then 구조로 테스트를 작성해 봤습니다.', 14, NOW()),
-    ('SQL JOIN 정리', 'INNER JOIN과 LEFT JOIN의 차이를 정리했습니다.', 15, NOW()),
-    ('개발자 공부 루틴', '매일 일정한 시간 동안 공부하는 습관을 만들고 있습니다.', 16, NOW()),
-    ('알고리즘 문제 풀이 기록', '오늘 해결한 문제와 풀이 방법을 기록합니다.', 17, NOW()),
-    ('코드 리뷰의 중요성', '다른 사람의 코드를 읽으며 새로운 관점을 배웠습니다.', 18, NOW()),
-    ('프로젝트 README 작성', '프로젝트 목적과 실행 방법을 문서로 정리했습니다.', 19, NOW()),
-    ('다음 프로젝트 계획', '지금까지 배운 내용을 활용해 새로운 기능을 만들어 보겠습니다.', 20, NOW());
+    ('블로그 개설을 환영합니다', '새 블로그가 문을 열었습니다. 많은 참여 부탁드립니다.', FALSE, 1, NOW()),
+    ('이용 수칙 안내', '서로 존중하는 소통 문화를 함께 만들어 가요.', TRUE, 1, NOW()),
+    ('스프링 부트 학습 후기', 'JPA를 배우니 SQL을 직접 쓰는 일이 확 줄었습니다.', FALSE, 2, NOW()),
+    ('연관관계 정리 노트', '@ManyToOne과 외래키의 관계를 정리해 봤습니다.', TRUE, 2, NOW()),
+    ('코딩 테스트 문제 추천', '알고리즘 공부에 좋은 문제들을 모아 봤습니다.', TRUE, 2, NOW()),
+    ('프론트엔드 프레임워크 비교', '리액트와 뷰의 장단점을 비교해 봤습니다.', TRUE, 3, NOW()),
+    ('신입 개발자 취업 팁', '포트폴리오에서 가장 중요했던 점을 공유합니다.', FALSE, 3, NOW()),
+    ('첫 번째 게시글입니다', '블로그에 처음 글을 올려 봅니다. 자주 소통해요.', FALSE, 4, NOW()),
+    ('Java 컬렉션 정리', 'List, Set, Map의 특징과 차이점을 정리했습니다.', TRUE, 5, NOW()),
+    ('객체지향 프로그래밍이란', '캡슐화, 상속, 다형성의 개념을 정리해 봤습니다.', FALSE, 6, NOW()),
+    ('REST API 설계 원칙', '일관성 있는 API URL을 설계하는 방법을 알아봅니다.', TRUE, 7, NOW()),
+    ('Git 브랜치 사용법', '브랜치를 이용해 기능별로 작업을 분리해 봤습니다.', FALSE, 8, NOW()),
+    ('MySQL 인덱스 기초', '인덱스를 사용하면 조회 성능을 개선할 수 있습니다.', TRUE, 9, NOW()),
+    ('트랜잭션 이해하기', '트랜잭션의 원자성과 일관성에 대해 공부했습니다.', FALSE, 10, NOW()),
+    ('HTTP 요청과 응답', '클라이언트와 서버가 데이터를 주고받는 과정을 정리했습니다.', FALSE, 11, NOW()),
+    ('CSS Flexbox 정리', 'Flexbox로 요소를 정렬하는 방법을 소개합니다.', TRUE, 12, NOW()),
+    ('JavaScript 비동기 처리', 'Promise와 async/await의 차이를 정리했습니다.', FALSE, 13, NOW()),
+    ('JPA 지연 로딩 이해', '지연 로딩과 즉시 로딩의 차이를 알아봅니다.', TRUE, 14, NOW()),
+    ('DTO를 사용하는 이유', '계층 간 데이터 전달에 DTO를 사용하는 이유입니다.', FALSE, 15, NOW()),
+    ('Spring 인터셉터 활용', '요청 처리 전후에 공통 기능을 실행해 봤습니다.', TRUE, 16, NOW()),
+    ('예외 처리 방법 정리', '예외 상황을 일관되게 처리하는 방법을 공유합니다.', FALSE, 17, NOW()),
+    ('페이징 처리 구현하기', '게시글을 페이지 단위로 나누어 조회하도록 구현했습니다.', TRUE, 18, NOW()),
+    ('게시글 검색 기능 만들기', '제목과 내용에 포함된 키워드로 게시글을 검색합니다.', FALSE, 19, NOW()),
+    ('Mustache 템플릿 사용법', '서버에서 전달한 데이터를 화면에 출력해 봤습니다.', FALSE, 20, NOW()),
+    ('로그를 활용한 디버깅', '로그를 활용해 오류가 발생한 지점을 찾아봅니다.', TRUE, 5, NOW()),
+    ('서비스와 레포지토리 역할', '서비스 계층과 레포지토리 계층의 책임을 정리했습니다.', FALSE, 6, NOW()),
+    ('데이터베이스 정규화', '중복 데이터를 줄이기 위한 정규화 개념을 알아봅니다.', TRUE, 7, NOW()),
+    ('외래키와 참조 무결성', '테이블 사이의 관계를 외래키로 관리해 봤습니다.', FALSE, 8, NOW()),
+    ('회원가입 기능 구현', '회원 정보를 입력받아 데이터베이스에 저장합니다.', FALSE, 9, NOW()),
+    ('로그인과 세션 관리', '세션을 이용해 로그인 상태를 유지해 봤습니다.', TRUE, 10, NOW()),
+    ('게시글 수정과 삭제', '작성자 본인만 게시글을 수정하고 삭제하도록 구현했습니다.', FALSE, 11, NOW()),
+    ('댓글 기능 구현하기', '게시글에 댓글을 작성하고 삭제할 수 있도록 만들었습니다.', TRUE, 12, NOW()),
+    ('좋아요 기능 구현하기', '사용자별 좋아요 상태를 데이터베이스에 저장합니다.', FALSE, 13, NOW()),
+    ('테스트 코드 작성법', 'Given-When-Then 구조로 테스트를 작성해 봤습니다.', TRUE, 14, NOW()),
+    ('SQL JOIN 정리', 'INNER JOIN과 LEFT JOIN의 차이를 정리했습니다.', FALSE, 15, NOW()),
+    ('개발자 공부 루틴', '매일 일정한 시간 동안 공부하는 습관을 만들고 있습니다.', FALSE, 16, NOW()),
+    ('알고리즘 문제 풀이 기록', '오늘 해결한 문제와 풀이 방법을 기록합니다.', TRUE, 17, NOW()),
+    ('코드 리뷰의 중요성', '다른 사람의 코드를 읽으며 새로운 관점을 배웠습니다.', FALSE, 18, NOW()),
+    ('프로젝트 README 작성', '프로젝트 목적과 실행 방법을 문서로 정리했습니다.', FALSE, 19, NOW()),
+    ('다음 프로젝트 계획', '지금까지 배운 내용을 활용해 새로운 기능을 만들어 보겠습니다.', TRUE, 20, NOW());
 
 -- =========================================
 -- 3. 댓글 80개

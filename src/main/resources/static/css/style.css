@@ -325,11 +325,94 @@ a {
 }
 
 .article-content {
-    min-height: 230px;
-    padding: 35px 0;
-    white-space: pre-wrap;
+    padding: 30px 0 34px;
+    text-align: left;
     overflow-wrap: anywhere;
-    line-height: 2;
+}
+
+/* 본문만 줄바꿈 유지 (템플릿 들여쓰기 공백이 출력되지 않도록 article-body에만 적용) */
+.article-body {
+    white-space: pre-wrap;
+    text-align: left;
+    line-height: 1.9;
+}
+
+.premium-label {
+    margin-left: 6px;
+    background: #fff4e0;
+    color: #b36b00;
+}
+
+/* 유료 게시글 구매 박스 */
+.purchase-box {
+    padding: 34px 32px 28px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    text-align: left;
+    white-space: normal;
+}
+
+.purchase-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background: #e8f0ff;
+    color: #0d6efd;
+    font-size: 19px;
+}
+
+.purchase-title {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+
+.purchase-desc {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.purchase-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+.purchase-price-box {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+}
+
+.purchase-price-label {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.purchase-price {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.purchase-footer form {
+    margin: 0;
+}
+
+.purchase-button {
+    padding: 11px 26px;
 }
 
 .article-actions,
@@ -343,6 +426,11 @@ a {
 
 .article-actions form {
     margin: 0;
+}
+
+.article-actions {
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
 }
 
 .form-heading {
@@ -662,5 +750,134 @@ textarea.form-control {
 
     .board-card {
         padding: 20px;
+    }
+}
+
+/* ===== 마이페이지 ===== */
+.mypage-wrap {
+    max-width: 640px;
+}
+
+.mypage-card {
+    padding: 32px;
+}
+
+.mypage-profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.mypage-avatar {
+    flex-shrink: 0;
+    width: 84px;
+    height: 84px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.mypage-avatar-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    color: #a0a4ad;
+    font-size: 30px;
+}
+
+.mypage-profile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.mypage-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.mypage-sub {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.mypage-info {
+    margin: 0;
+    padding: 6px 0;
+}
+
+.mypage-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px solid #f0f0f2;
+}
+
+.mypage-row:last-child {
+    border-bottom: none;
+}
+
+.mypage-row dt {
+    flex: 0 0 72px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.mypage-row dd {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 15px;
+}
+
+.mypage-point {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.mypage-point-label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.mypage-point-value {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.mypage-point-value span {
+    font-size: 15px;
+}
+
+.mypage-actions {
+    margin-top: 24px;
+}
+
+@media (max-width: 575px) {
+    .mypage-card {
+        padding: 22px;
+    }
+
+    .mypage-point {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
     }
 }

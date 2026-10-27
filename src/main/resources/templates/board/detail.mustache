@@ -9,6 +9,9 @@
     <article class="article-card">
         <div class="article-header">
             <span class="category-label">DEVELOPMENT</span>
+            {{#board.premium}}
+                <span class="category-label premium-label"><i class="fa-solid fa-lock me-1"></i>유료</span>
+            {{/board.premium}}
             <h1>{{board.title}}</h1>
             <div class="article-meta">
                 <span><i class="fa-regular fa-user me-1"></i>{{board.username}}</span>
@@ -16,37 +19,45 @@
             </div>
         </div>
 
-        <div class="article-content">{{board.content}}</div>
-
+        <!-- 게시글 본문 또는 구매 안내 -->
         <div class="article-content">
             {{#board.canRead}}
-                {{board.content}}
+                <div class="article-body">{{board.content}}</div>
             {{/board.canRead}}
 
             {{^board.canRead}}
-                <div class="text-center p-4">
-                    <p>유료 게시글입니다. 구매 후 내용을 볼 수 있습니다.</p>
-                    <p>금액은 500P입니다.</p>
+                <div class="purchase-box">
+                    <div class="purchase-icon">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h5 class="purchase-title">구매 후 전체 내용을 확인할 수 있습니다.</h5>
+                    <p class="purchase-desc">유료 게시글입니다. 포인트를 사용하여 열람할 수 있습니다.</p>
 
-                    {{#sessionUser}}
-                        <form action="/board/{{board.id}}/purchase"
-                              method="POST"
-                              onsubmit="return confirm('500포인트로 이 게시글을 구매하시겠습니까?')">
-                            <button type="submit" class="btn btn-primary">
-                                구매하기 500P
-                            </button>
-                        </form>
-                    {{/sessionUser}}
+                    <div class="purchase-footer">
+                        <div class="purchase-price-box">
+                            <span class="purchase-price-label">열람 가격</span>
+                            <strong class="purchase-price">{{board.price}}P</strong>
+                        </div>
 
-                    {{^sessionUser}}
-                        <a href="/login" class="btn btn-outline-primary">
-                            로그인 후 구매
-                        </a>
-                    {{/sessionUser}}
+                        {{#sessionUser}}
+                            <form action="/board/{{board.id}}/purchase"
+                                  method="POST"
+                                  onsubmit="return confirm('{{board.price}}포인트로 이 게시글을 구매하시겠습니까?')">
+                                <button type="submit" class="btn btn-primary purchase-button">
+                                    <i class="fa-solid fa-lock-open me-1"></i>구매하기
+                                </button>
+                            </form>
+                        {{/sessionUser}}
+
+                        {{^sessionUser}}
+                            <a href="/login" class="btn btn-outline-primary purchase-button">로그인 후 구매</a>
+                        {{/sessionUser}}
+                    </div>
                 </div>
             {{/board.canRead}}
         </div>
 
+        <!-- 게시글 하단 버튼 -->
         <div class="article-actions">
             <div class="like-section">
                 <button type="button" id="likeButton" class="btn btn-outline-danger">
