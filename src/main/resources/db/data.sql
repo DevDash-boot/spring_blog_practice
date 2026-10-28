@@ -242,3 +242,55 @@ VALUES
     (38, 11), (38, 16), (38, 2),
     (39, 12), (39, 17), (39, 3),
     (40, 13), (40, 18), (40, 4);
+
+-- =========================================
+-- 5. 결제 내역
+-- minsu(user_id = 2)의 상태별 테스트 데이터
+-- =========================================
+
+-- 결제 대기
+INSERT INTO payment_tb
+(payment_id, pg_tx_id, user_id, amount, status, created_at)
+VALUES
+    ('point_2_sample_001', 'PG_TX_SAMPLE_001', 2, 1000, 'READY', NOW());
+
+-- 결제 완료
+INSERT INTO payment_tb
+(payment_id, pg_tx_id, user_id, amount, status, created_at)
+VALUES
+    ('point_2_sample_002', 'PG_TX_SAMPLE_002', 2, 2000, 'PAID', NOW());
+
+-- 결제 취소
+INSERT INTO payment_tb
+(payment_id, pg_tx_id, user_id, amount, status, created_at)
+VALUES
+    ('point_2_sample_003', 'PG_TX_SAMPLE_003', 2, 3000, 'CANCEL', NOW());
+
+-- 환불
+INSERT INTO payment_tb
+(payment_id, pg_tx_id, user_id, amount, status, created_at)
+VALUES
+    ('point_2_sample_004', 'PG_TX_SAMPLE_004', 2, 4000, 'REFUND', NOW());
+
+-- 결제 실패
+INSERT INTO payment_tb
+(payment_id, pg_tx_id, user_id, amount, status, created_at)
+VALUES
+    ('point_2_sample_005', 'PG_TX_SAMPLE_005', 2, 5000, 'FAILED', NOW());
+
+-- =========================================
+-- 6. 유료 게시글 구매 내역
+-- premium = TRUE인 게시글만 구매
+-- 게시글 작성자 본인의 게시글은 제외
+-- =========================================
+INSERT INTO purchase_tb (user_id, board_id, price, created_at)
+VALUES
+    (2, 2, 500, NOW()),
+    (3, 4, 500, NOW()),
+    (4, 6, 500, NOW()),
+    (7, 11, 500, NOW()),
+    (9, 16, 500, NOW()),
+    (12, 18, 500, NOW()),
+    (14, 20, 500, NOW()),
+    (18, 27, 500, NOW()),
+    (20, 34, 500, NOW());

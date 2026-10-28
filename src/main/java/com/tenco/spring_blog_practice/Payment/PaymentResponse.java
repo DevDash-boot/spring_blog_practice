@@ -42,4 +42,26 @@ public class PaymentResponse {
             private Integer total;
         }
     }
+
+    @Data
+    public static class ListDto {
+        private Long id;
+        private String pgTxId;
+        private String paymentId;
+        private String paymentAt;
+        private String statusDisplay;
+        private String statusBadgeClass;
+        private String amount;
+
+        @Builder
+        public ListDto(Payment payment) {
+            this.id = payment.getId();
+            this.pgTxId = payment.getPgTxId();
+            this.paymentId = payment.getPaymentId();
+            this.paymentAt = payment.getCreatedAt().toString();
+            this.statusDisplay = payment.getStatus().getDisplayName();
+            this.statusBadgeClass = payment.getStatus().getBadgeClass();
+            this.amount = String.valueOf(payment.getAmount());
+        }
+    }
 }

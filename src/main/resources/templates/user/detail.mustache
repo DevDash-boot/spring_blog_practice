@@ -48,7 +48,7 @@
             <div class="mypage-point">
                 <div>
                     <span class="mypage-point-label">보유 포인트</span>
-                    <strong class="mypage-point-value" id="point-display">{{user.point}}<span> P</span></strong>
+                    <strong class="mypage-point-value point" id="point-display">{{user.point}}<span> P</span></strong>
                 </div>
                 <a href="/user/point/charge" class="btn btn-success">
                     <i class="fa-solid fa-coins me-1"></i>포인트 충전
@@ -56,11 +56,20 @@
             </div>
 
             <div class="form-actions mypage-actions">
+                <a href="/user/purchase/list" class="btn btn-info">구매 내역</a>
+                <a href="/user/payment/list" class="btn btn-warning">결제 내역</a>
                 <a href="/user/update" class="btn btn-dark">회원 정보 수정</a>
                 <a href="/board/list" class="btn btn-outline-dark">목록으로</a>
             </div>
         </div>
     </div>
 </section>
-
+<script>
+    document.querySelectorAll(".point").forEach((element) => {
+        element.textContent = element.textContent.replace(
+                /\B(?=(\d{3})+(?!\d))/g,
+                ","
+        );
+    });
+</script>
 {{> layout/footer}}

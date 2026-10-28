@@ -1,0 +1,86 @@
+{{> layout/header}}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">결제 내역</h2>
+                    <p class="text-muted mb-0">포인트 충전 및 결제 내역을 확인할 수 있습니다.</p>
+                </div>
+                <a href="/user/detail" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> 마이페이지
+                </a>
+            </div>
+
+            {{#paymentList}}
+                <div class="card shadow-sm mb-3 border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title fw-bold mb-3">
+                                    <i class="fa-solid fa-receipt me-2"></i>결제 #{{id}}
+                                </h5>
+
+                                <p class="text-muted mb-2">
+                                    <i class="fa-solid fa-receipt me-1"></i>
+                                    주문번호 : {{paymentId}}
+                                </p>
+
+                                <p class="text-muted mb-2">
+                                    <i class="fa-solid fa-key me-1"></i>
+                                    PG 거래번호 :
+                                    {{#pgTxId}}{{pgTxId}}{{/pgTxId}}
+                                    {{^pgTxId}}-{{/pgTxId}}
+                                </p>
+
+                                <p class="text-muted mb-2">
+                                    <i class="fa-solid fa-calendar me-1"></i>
+                                    결제 일시 : {{paymentAt}}
+                                </p>
+
+                                <p class="text-muted mb-0">
+                                    <i class="fa-solid fa-circle-info me-1"></i>
+                                    상태 :
+                                    <span class="badge {{statusBadgeClass}}">{{statusDisplay}}</span>
+                                </p>
+                            </div>
+
+                            <div class="text-end ms-3">
+                                <span class="badge bg-primary fs-6 amount">+{{amount}} P</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/paymentList}}
+
+            {{^paymentList}}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fa-solid fa-receipt fa-3x text-secondary mb-3"></i>
+                        <h5 class="fw-bold">결제 내역이 없습니다.</h5>
+                        <p class="text-muted mb-3">포인트를 충전해 유료 게시글을 구매해 보세요!</p>
+                        <a href="/" class="btn btn-primary me-2">게시글 목록으로</a>
+                        <a href="/user/point/charge" class="btn btn-success">포인트 충전하기</a>
+                    </div>
+                </div>
+            {{/paymentList}}
+
+            <div class="mt-4">
+                <a href="/user/detail" class="btn btn-secondary">마이페이지로 돌아가기</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll(".amount").forEach((element) => {
+        element.textContent = element.textContent.replace(
+                /\B(?=(\d{3})+(?!\d))/g,
+                ","
+        );
+    });
+</script>
+
+{{> layout/footer}}

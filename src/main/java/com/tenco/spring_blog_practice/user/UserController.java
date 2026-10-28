@@ -1,11 +1,15 @@
 package com.tenco.spring_blog_practice.user;
 
+import com.tenco.spring_blog_practice.Payment.PaymentResponse;
+import com.tenco.spring_blog_practice.Payment.PaymentService;
 import com.tenco.spring_blog_practice._core.error.Exception400;
 import com.tenco.spring_blog_practice._core.error.Exception401;
 import com.tenco.spring_blog_practice._core.util.Define;
 import com.tenco.spring_blog_practice.oauth.GoogleLoginService;
 import com.tenco.spring_blog_practice.oauth.KakaoLoginService;
 import com.tenco.spring_blog_practice.oauth.NaverLoginService;
+import com.tenco.spring_blog_practice.purchase.PurchaseResponse;
+import com.tenco.spring_blog_practice.purchase.PurchaseService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -26,6 +31,8 @@ public class UserController {
     private final KakaoLoginService kakaoLoginService;
     private final GoogleLoginService googleLoginService;
     private final NaverLoginService naverLoginService;
+    private final PurchaseService purchaseService;
+    private final PaymentService paymentService;
 
     @GetMapping("/kakao-login")
     public String kakaoLogin() {
@@ -157,5 +164,21 @@ public class UserController {
         User user = userService.findById(sessionUserDto.getId());
         model.addAttribute("user", user);
         return "user/charge-point";
+    }
+
+    @GetMapping("/user/purchase/list")
+    public String purchaseList(Model model, HttpSession session) {
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        List<PurchaseResponse.ListDto> purchaseList = purchaseService.findAllByUserId(sessionUserDto.getId());
+        model.addAttribute("purchaseList", purchaseList);
+        return "user/purchase-list";
+    }
+
+    @GetMapping("/user/payment/list")
+    public String paymentList(Model model, HttpSession session) {
+        SessionUserDto sessionUserDto = (SessionUserDto) session.getAttribute(Define.SESSION_USER);
+        List<PaymentResponse.ListDto> paymentList = paymentService.findAllByUserId(sessionUserDto.getId());
+        model.addAttribute("paymentList", paymentList);
+        return "user/payment-list";
     }
 }
