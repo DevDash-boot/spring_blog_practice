@@ -52,6 +52,8 @@ public class PaymentResponse {
         private String statusDisplay;
         private String statusBadgeClass;
         private String amount;
+        private boolean cancelled;  // 환불 완료 결제 인지 확인
+        private boolean refundable;     // 환불 가능한지
 
         @Builder
         public ListDto(Payment payment) {
@@ -62,6 +64,8 @@ public class PaymentResponse {
             this.statusDisplay = payment.getStatus().getDisplayName();
             this.statusBadgeClass = payment.getStatus().getBadgeClass();
             this.amount = String.valueOf(payment.getAmount());
+            this.cancelled = payment.getStatus() == PaymentStatus.CANCELLED;
+            this.refundable = refundable;
         }
     }
 }

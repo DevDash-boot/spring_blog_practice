@@ -24,4 +24,12 @@ public interface PaymentJpaRepository extends JpaRepository<Payment, Long> {
             order by p.id desc
             """)
     List<Payment> findAllByUserId(@Param("userId") Long userId);
+
+    @Query("""
+        select p from Payment p 
+        where p.user.id = :userId 
+        and p.status in :statusList
+        order by p.id desc
+        """)
+    List<Payment> findAllByUserIdAndStatusList(@Param("userId") Long userId, @Param("statusList") List<PaymentStatus> statusList);
 }

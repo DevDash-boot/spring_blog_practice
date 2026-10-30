@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,7 +72,24 @@ public class PaymentService {
     }
 
     public List<PaymentResponse.ListDto> findAllByUserId(Long userId) {
-        List<Payment> paymentList = paymentJpaRepository.findAllByUserId(userId);
-        return paymentList.stream().map(PaymentResponse.ListDto::new).toList();
+        // 화면에 보여 줄 상태 목록
+        List<Payment> paymentList = paymentJpaRepository
+                .findAllByUserIdAndStatusList(userId, List.of(PaymentStatus.PAID, PaymentStatus.CANCELLED));
+        // 상태를 저장할 리스트
+        List<PaymentResponse.ListDto> resultList = new ArrayList<>();
+        // 환불 테이블에 내가 요청한 PK 정보만 리스트로 뽑아온다.
+        List<Long> requestedPaymentPkList = refundRepository.findPaymentPkListByUserId(userId);
+        for(Payment payment:paymentList){
+            boolean refundable = false; // 기본값은 버튼 숨김
+            // Payment 테이블이 PAID 상태이고, 아직 환불 요청한 적이 없을 때
+            if(payment.isPaid()){
+                boolean isRefundRequest = requestedPaymentPkList.contains(payment.getId());
+                if (!isRefundRequest) {
+                    refundable = true;
+                }
+            }
+            resultList.add(new PaymentResponse.ListDto(payment, refundable));
+        }
+        return resultList;
     }
 }

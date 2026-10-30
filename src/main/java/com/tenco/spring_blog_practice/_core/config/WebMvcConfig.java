@@ -45,7 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(ipBlockInterceptor).addPathPatterns("/**");
         registry.addInterceptor(sessionUserModleInterceptor).addPathPatterns("/**");
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/user/**", "/board/**", "/reply/**", "/admin/**")
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/user/**", "/board/**", "/reply/**", "/admin/**",  "/refund/**")
                 .excludePathPatterns("/board/list", "/board/{id:\\d+}");
         registry.addInterceptor(adminInterceptor).addPathPatterns("/admin/**");
     }
