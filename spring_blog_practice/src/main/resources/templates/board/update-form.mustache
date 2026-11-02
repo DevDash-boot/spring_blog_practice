@@ -1,0 +1,53 @@
+{{> layout/header}}
+
+<section class="container form-container">
+    <a href="/board/{{board.id}}" class="back-link">
+        <i class="fa-solid fa-arrow-left me-2"></i> 게시글로 돌아가기
+    </a>
+
+    <div class="form-heading">
+        <span class="eyebrow">EDIT ARTICLE</span>
+        <h1>게시글 수정</h1>
+        <p>게시글 내용을 수정하고 저장하세요.</p>
+    </div>
+
+    <form action="/board/{{board.id}}/update" method="post" class="editor-form">
+        <div class="mb-4">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" id="title" name="title" class="form-control"
+                   value="{{board.title}}" required>
+        </div>
+        <div class="mb-4">
+            <label for="content" class="form-label">내용</label>
+            <textarea id="content" name="content" class="form-control"
+                      rows="12" required>{{board.content}}</textarea>
+        </div>
+        {{! 체크하면 premium = true. 체크하지 않으면 아무 값도 보내지 않음}}
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="premium" name="premium" value="true" {{#board.premium}}checked{{/board.premium}}>
+            <label for="premium" class="form-check-label">유료 게시글로 등록 (다른 사용자는 500 포인트로 구매 후 열람할 수 있습니다.)</label>
+        </div>
+        <div class="form-actions">
+            <a href="/board/{{board.id}}" class="btn btn-outline-dark">취소</a>
+            <button type="submit" class="btn btn-dark">수정 완료</button>
+        </div>
+    </form>
+
+    <!-- AI 교정 요청 -->
+    <div class="mt-3">
+        <button type="button"
+                id="proofreadButton"
+                class="btn btn-outline-primary"
+                onclick="proofread()">
+            ✨ AI 교정
+        </button>
+
+        <!-- AI 교정 결과 -->
+        <pre id="proofreadResult"
+             class="border rounded bg-light p-3 mt-3"
+             style="white-space: pre-wrap; overflow-wrap: anywhere;"
+             aria-live="polite"></pre>
+    </div>
+</section>
+
+{{> layout/footer}}

@@ -1,0 +1,129 @@
+package com.tenco.spring_blog_practice.user;
+
+import com.tenco.spring_blog_practice._core.error.Exception400;
+import com.tenco.spring_blog_practice._core.error.NotEnoughPointException;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "user_tb")
+@Getter
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String username;
+    private String password;
+    @Column(unique = true)
+    private String email;
+
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    // 프로필 이미지 파일 이름(선택 사항이므로 null 가능)
+    private String profileImage;
+
+    // 사용자의 역할 목록(User ---- 1 : N ---- UserRole, 단방향)
+    // [cascade, orphanRemoval] : 두 옵션은 부모 쪽의 @OneToMany 컬렉션에 붙인다. User가 List<UserRole>을 가지고 있다.
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id", nullable = false)
+    private List<UserRole> roles = new ArrayList<>();
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    @Setter
+    private boolean certification = false;
+
+    // 가입 경로(DB에는 LOCAL, KAKAO 문자열로 저장)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @ColumnDefault("'LOCAL'")   // 문자열이므로 안에 작은 따옴표 필수
+    private OAuthProvider provider;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int point; // Integer가 아니기 때문에 null값 세팅이 필요 없다. 또 builder에 안 넣어도 된다.
+
+    // 포인트 관련 편의 메서드 추가
+    public void chargePoint(int amount) {
+        if (amount <= 0) {
+            throw new Exception400("충전할 포인트는 0보다 커야합니다.");
+        }
+        this.point += amount;
+    }
+
+    public void deductPoint(int amount) {
+        if (amount <= 0) {
+            throw new Exception400("차감할 포인트는 0보다 커야 한다.");
+        }
+        if (this.point < amount) {
+            throw new NotEnoughPointException("마이 페이지에서 충전 후 다시 시도해주세요.");
+        }
+        this.point -= amount;
+    }
+
+    // 역할 추가(회원가입 시 기본 USER 부여, 관리자는 직접 지정)
+    public void addRole(Role role) {
+        // 이미 가진 역할이면 추가하지 않음(코드에서 1차 방어)
+        if (hasRole(role)) {
+            return;
+        }
+        this.roles.add(UserRole.builder().role(role).build());
+    }
+
+    // 해당 역할을 가지고 있는지 확인
+    public boolean hasRole(Role role) {
+        for (UserRole u : this.roles) {
+            if (u.getRole() == role) {
+                return true;    // 찾으면 바로 true
+            }
+        }
+        return false;   // 끝까지 없으면 false
+    }
+
+    // 로그인 한 사용자의 관리자 여부 확인 메서드
+    public boolean isAdmin() {
+        return hasRole(Role.ADMIN); // 고정값 : 관리자 여부인지만 확인
+    }
+
+    @Builder
+    public User(String username, String password, String email, String profileImage, OAuthProvider provider) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.provider = (provider == null) ? OAuthProvider.LOCAL : provider;
+    }
+
+    public void update(String password) {
+        this.password = password;
+    }
+
+    // 프로필 이미지 변경(null 이면 삭제) - 트랜잭션 안에서 호출하면 더티 체킹이 발생됨
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    // 프로필 경로
+    public String getProfilePath() {
+        if (this.profileImage == null) {
+            return null;
+        }
+        // 카카오 소셜 로그인 시 http로 시작하는 이미지가 들어온다.
+        if (this.profileImage.startsWith("http")) {
+            return this.profileImage;
+        }
+        // 로컬 사용자의 이미지
+        return "/images/" + this.profileImage;
+    }
+}

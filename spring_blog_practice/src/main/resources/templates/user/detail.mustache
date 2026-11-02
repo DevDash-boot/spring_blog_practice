@@ -1,0 +1,166 @@
+
+{{> layout/header}}
+
+<section class="container form-container d-flex flex-column align-items-center py-5">
+    <div class="w-100 mypage-wrap">
+        <div class="form-heading mb-4">
+            <span class="eyebrow">MY ACCOUNT</span>
+            <h1>마이페이지</h1>
+            <p>내 회원 정보를 확인하세요.</p>
+        </div>
+
+        <div class="auth-card w-100 mypage-card">
+            <!-- 프로필 -->
+            <div class="mypage-profile">
+                {{#user.profileImage}}
+                    <img src="{{user.profileImage}}" alt="프로필 이미지" class="mypage-avatar">
+                {{/user.profileImage}}
+
+                {{^user.profileImage}}
+                    <div class="mypage-avatar mypage-avatar-empty">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                {{/user.profileImage}}
+
+                <div class="mypage-profile-text">
+                    <strong class="mypage-name mypage-text">{{user.username}}</strong>
+                    <span class="mypage-sub mypage-text">{{user.email}}</span>
+                </div>
+            </div>
+
+            <!-- 회원 정보 -->
+            <dl class="mypage-info">
+                <div class="mypage-row">
+                    <dt>아이디</dt>
+                    <dd class="mypage-text">{{user.username}}</dd>
+                </div>
+                <div class="mypage-row">
+                    <dt>이메일</dt>
+                    <dd class="mypage-text">{{user.email}}</dd>
+                </div>
+                <div class="mypage-row">
+                    <dt>가입일</dt>
+                    <dd>{{user.createdAt}}</dd>
+                </div>
+            </dl>
+
+            {{! 휴대폰 인증 : 인증이 끝나면 상태만 보여주고, 아직이면 인증 입력 칸을 보여준다 }}
+            <div class="mypage-row flex-column align-items-stretch mb-3" id="phone-section">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">휴대폰 인증</span>
+                    {{#user.certification}}
+                        <span class="badge bg-success"><i class="fa-solid fa-circle-check me-1"></i>인증 완료</span>
+                    {{/user.certification}}
+                    {{^user.certification}}
+                        <span class="badge bg-secondary">미인증</span>
+                    {{/user.certification}}
+                </div>
+
+                {{^user.certification}}
+                    <div class="input-group mt-2">
+                        <input type="tel" id="telNumber" class="form-control"
+                               placeholder="휴대폰 번호 (예: 01012345678)" maxlength="13">
+                        <button type="button" class="btn btn-outline-secondary" id="sms-send-btn"
+                                onclick="sendSms()">인증 번호 전송</button>
+                    </div>
+                    <div class="input-group mt-2" id="sms-code-box" style="display: none;">
+                        <input type="text" id="smsCode" class="form-control" placeholder="6자리 인증 번호"
+                               maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+                        <button type="button" class="btn btn-outline-secondary" id="sms-verify-btn"
+                                onclick="verifySms()">인증 번호 확인</button>
+                    </div>
+                    <div id="sms-msg" class="form-text"></div>
+                {{/user.certification}}
+            </div>
+
+            {{! 보유 포인트 + 충전 결제와 연동}}
+            <div class="mypage-point">
+                <div>
+                    <span class="mypage-point-label">보유 포인트</span>
+                    <strong class="mypage-point-value point" id="point-display">{{user.point}}<span> P</span></strong>
+                </div>
+                <a href="/user/point/charge" class="btn btn-success">
+                    <i class="fa-solid fa-coins me-1"></i>포인트 충전
+                </a>
+            </div>
+
+            <div class="form-actions mypage-actions">
+                <a href="/user/purchase/list" class="btn btn-info">구매 내역</a>
+                <a href="/user/payment/list" class="btn btn-warning">결제 내역</a>
+                <a href="/user/update" class="btn btn-dark">회원 정보 수정</a>
+                <a href="/board/list" class="btn btn-outline-dark">목록으로</a>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    document.querySelectorAll(".point").forEach((element) => {
+        element.textContent = element.textContent.replace(
+                /\B(?=(\d{3})+(?!\d))/g,
+                ","
+        );
+    });
+
+    // ===== 휴대폰 인증 =====
+    async function sendSms() {
+        const tel = document.getElementById("telNumber").value.trim();
+        const msg = document.getElementById("sms-msg");
+        const btn = document.getElementById("sms-send-btn");
+        if (!tel) {
+            msg.textContent = "휴대폰 번호를 입력해주세요.";
+            msg.className = "form-text text-danger";
+            return;
+        }
+        btn.disabled = true;
+        try {
+            const res = await fetch("/api/sms/send", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({telNumber: tel})
+            });
+            const result = await res.json();
+            if (res.ok) {
+                document.getElementById("sms-code-box").style.display = "flex";
+                msg.className = "form-text text-success";
+            } else {
+                msg.className = "form-text text-danger";
+            }
+            msg.textContent = result.message;
+        } catch (e) {
+            msg.textContent = "서버와 통신하지 못했습니다.";
+            msg.className = "form-text text-danger";
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function verifySms() {
+        const tel = document.getElementById("telNumber").value.trim();
+        const code = document.getElementById("smsCode").value.trim();
+        const msg = document.getElementById("sms-msg");
+        if (!/^\d{6}$/.test(code)) {
+            msg.textContent = "인증 번호 6자리를 입력해주세요.";
+            msg.className = "form-text text-danger";
+            return;
+        }
+        try {
+            const res = await fetch("/api/sms/verify", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({telNumber: tel, code: code})
+            });
+            const result = await res.json();
+            if (res.ok) {
+                alert(result.message);
+                location.reload();      // 인증 완료 상태로 화면 갱신
+            } else {
+                msg.textContent = result.message;
+                msg.className = "form-text text-danger";
+            }
+        } catch (e) {
+            msg.textContent = "서버와 통신하지 못했습니다.";
+            msg.className = "form-text text-danger";
+        }
+    }
+</script>
+{{> layout/footer}}

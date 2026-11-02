@@ -1,0 +1,24 @@
+{{! 공통 페이지 번호 조각 - 각 목록 화면에서 해당 Page 객체 섹션 안에 포함해서 사용한다 }}
+{{#hasPages}}
+    <nav aria-label="페이지 이동">
+        <ul class="pagination justify-content-center mt-4">
+            {{#hasPrevious}}
+                <li class="page-item">
+                    <a class="page-link" href="{{baseUrl}}page={{previousPage}}">이전</a>
+                </li>
+            {{/hasPrevious}}
+
+            {{#pageLinks}}
+                <li class="page-item {{#active}}active{{/active}}">
+                    <a class="page-link" href="{{baseUrl}}page={{number}}">{{number}}</a>
+                </li>
+            {{/pageLinks}}
+
+            {{#hasNext}}
+                <li class="page-item">
+                    <a class="page-link" href="{{baseUrl}}page={{nextPage}}">다음</a>
+                </li>
+            {{/hasNext}}
+        </ul>
+    </nav>
+{{/hasPages}}

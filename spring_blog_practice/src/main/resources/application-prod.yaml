@@ -1,0 +1,26 @@
+server:
+  port: 5000
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    root: INFO
+    com.tenco.spring_blog_practice: INFO
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 10
+        format_sql: true
+    defer-datasource-initialization: true
